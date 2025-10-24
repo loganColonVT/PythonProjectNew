@@ -57,7 +57,14 @@ def peer_evaluation_submit():
     day2 = request.forms["day2"]
     year2 = request.forms["year2"]
 
+    #participation score IMPORTANT REMINDER - ENSURE USER SELECTS
+    #A VALUE AND THAT THE VALUE IS CONVERTED TO INT
+    pscore = request.forms["field1"]
 
+    #reminders:
+    #Log in functionality (Vital) - hardcode if you need to but include this.
+    #Do rest of radio forms. ensure conversions to ints
+    #Attempt Zappier addition? Do last though.
     return render_template('confirmation-screens.html')
     
 
