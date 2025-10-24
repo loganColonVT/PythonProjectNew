@@ -37,71 +37,71 @@ def peer_evaluation():
 @app.route('/peer-evalsubmit', methods=['GET', 'POST'])
 def peer_evaluation_submit():
     # Student evaluator
-    fname = request.forms["fname"]
-    lname = request.forms["lname"]
+    fname = request.form["fname"]
+    lname = request.form["lname"]
 
     # Student evaluatee
-    fname2 = request.forms["fname2"]
-    lname2 = request.forms["lname2"]
+    fname2 = request.form["fname2"]
+    lname2 = request.form["lname2"]
 
     # Course ID
-    courseID = request.forms["courseID"]
+    courseID = request.form["courseID"]
 
     # Completion date Month, Day, Year (Respectively)
-    month = request.forms["month"]
-    day = request.forms["day"]
-    year = request.forms["year"]
+    month = request.form["month"]
+    day = request.form["day"]
+    year = request.form["year"]
 
     # Evaluation due date month, day, year (respectively)
-    month2 = request.forms["month2"]
-    day2 = request.forms["day2"]
-    year2 = request.forms["year2"]
+    month2 = request.form["month2"]
+    day2 = request.form["day2"]
+    year2 = request.form["year2"]
 
     #participation score IMPORTANT REMINDER - ENSURE USER SELECTS
     #A VALUE AND THAT THE VALUE IS CONVERTED TO INT
-    pscore = request.forms["field1"]
+    pscore = request.form["field1"]
 
     #skillful score
-    sscore = request.forms["field2"]
+    sscore = request.form["field2"]
 
     #feedback score
-    fscore = request.forms["field3"]
+    fscore = request.form["field3"]
 
     #communication score
-    cscore = request.forms["field4"]
+    cscore = request.form["field4"]
 
     #encouragement score
-    escore = request.forms["field5"]
+    escore = request.form["field5"]
 
     #integration score 
-    iscore = request.forms["field6"]
+    iscore = request.form["field6"]
 
     #role score
-    rscore = request.forms["field7"]
+    rscore = request.form["field7"]
 
     #goals score
-    gscore = request.forms["field8"]
+    gscore = request.form["field8"]
 
     #reporting score
-    rscore = request.forms["field9"]
+    rscore = request.form["field9"]
 
     #consistency score
-    coscore = request.forms["field10"]
+    coscore = request.form["field10"]
     
     #optimism score
-    oscore = request.forms["field11"]
+    oscore = request.form["field11"]
 
     #appropriate assertiveness score
-    ascore = request.forms["field12"]
+    ascore = request.form["field12"]
 
     #healthy debate score
-    dscore = request.forms["field13"]
+    dscore = request.form["field13"]
 
     #response to conflict score
-    rtcscore = request.forms["field14"]
+    rtcscore = request.form["field14"]
 
     #overall score
-    ovscore = request.forms["field15"]
+    ovscore = request.form["field15"]
 
 
     #reminders:
