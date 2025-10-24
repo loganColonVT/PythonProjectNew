@@ -35,7 +35,7 @@ def peer_evaluation():
 #Also ensure that you have the correct values to be added to database - 
 #there could be more or less than what is provided. Consult Daria/Shriya!!
 @app.route('/peer-evalsubmit', methods=['GET', 'POST'])
-def peer_evaluation():
+def peer_evaluation_submit():
     # Student evaluator
     fname = request.forms["fname"]
     lname = request.forms["lname"]
