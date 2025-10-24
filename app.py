@@ -12,12 +12,23 @@ def home():
 def confirmation_screens():
     return render_template('confirmation-screens.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
 def login():
+    return render_template('login.html')
+app.route('/loginSubmit', methods=['POST'])
+def loginSubmit():
+    #KEEP IN MIND - no DB connection. As of now, hard coded.
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if email != 'logan@vt.edu':
+        return redirect(url_for(login.html))
+    if password != 'pass':
+        return redirect(url_for(login.html))
     if request.method == 'POST':
         # Handle form submission - redirect to student dashboard
         return redirect(url_for('student_dashboard'))
-    return render_template('login.html')
+    
 
 @app.route('/get-started', methods=['POST'])
 def get_started():

@@ -1,0 +1,15 @@
+SPRINT 1:
+
+NO CONNECTION TO DB YET! MANY FUNCTIONAL REQUIREMENTS NEED TO BE ADDED LATER WHEN CONNECTION IS ESTABLISHED
+
+In the form, user entries are not stored on error submission. Their responses are reset.
+In the form, No max or min values on month day or year actually  apply.
+No connection to DB -> nothing is autofilled or stored
+    Course ID and student inputs should be drop downs taken from DB.
+"confirmation screens" on Nav bar?
+"logout" button when not logged in.
+Student dashboard not linked to DB.
+
+login not linked to DB. hardcoded log in information.
+
+Complete before final project due
