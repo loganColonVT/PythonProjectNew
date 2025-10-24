@@ -19,7 +19,7 @@ def login():
         return redirect(url_for('student_dashboard'))
     return render_template('login.html')
 
-@app.route('/get-started', methods=['GET', 'POST'])
+@app.route('/get-started', methods=['POST'])
 def get_started():
     if request.method == 'POST':
         # Handle form submission - show success message
@@ -83,7 +83,7 @@ def peer_evaluation_submit():
     gscore = request.form["field8"]
 
     #reporting score
-    rscore = request.form["field9"]
+    rescore = request.form["field9"]
 
     #consistency score
     coscore = request.form["field10"]
