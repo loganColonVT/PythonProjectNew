@@ -31,7 +31,7 @@ def loginSubmit():
 
     if error:
         flash("Invalid email or password")
-        return redirect(url_for(login.html))
+        return redirect(url_for('login'))
     if request.method == 'POST':
         # Handle form submission - redirect to student dashboard
         return redirect(url_for('student_dashboard'))
