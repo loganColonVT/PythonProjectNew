@@ -18,12 +18,18 @@ def login():
 app.route('/loginSubmit', methods=['POST'])
 def loginSubmit():
     #KEEP IN MIND - no DB connection. As of now, hard coded.
+    error = False
     email = request.form.get("email")
     password = request.form.get("password")
 
     if email != 'logan@vt.edu':
-        return redirect(url_for(login.html))
+        error = True
+        
     if password != 'pass':
+        error = True
+
+    if error:
+        flash("Invalid email or password")
         return redirect(url_for(login.html))
     if request.method == 'POST':
         # Handle form submission - redirect to student dashboard

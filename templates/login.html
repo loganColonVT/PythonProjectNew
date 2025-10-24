@@ -149,6 +149,21 @@
   </head>
 
   <body class="login-page">
+    <style>
+            .error-message {
+              color:firebrick
+            }
+          </style>
+          {% block content %}
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li class="error-message">{{message}}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+          {% endwith %}
     <!-- Main Content -->
     <main>
       <section class="login-section">
