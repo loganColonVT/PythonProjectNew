@@ -37,27 +37,27 @@ def peer_evaluation():
 @app.route('/peer-evalsubmit', methods=['GET', 'POST'])
 def peer_evaluation():
     # Student evaluator
-    fname = request.args["fname"]
-    lname = request.args["lname"]
+    fname = request.forms["fname"]
+    lname = request.forms["lname"]
 
     # Student evaluatee
-    fname2 = request.args["fname2"]
-    lname2 = request.args["lname2"]
+    fname2 = request.forms["fname2"]
+    lname2 = request.forms["lname2"]
 
     # Course ID
-    courseID = request.args["courseID"]
+    courseID = request.forms["courseID"]
 
     # Completion date Month, Day, Year (Respectively)
-    month = request.args["month"]
-    day = request.args["day"]
-    year = request.args["year"]
+    month = request.forms["month"]
+    day = request.forms["day"]
+    year = request.forms["year"]
 
     # Evaluation due date month, day, year (respectively)
-    month2 = request.args["month2"]
-    day2 = request.args["day2"]
-    year2 = request.args["year2"]
+    month2 = request.forms["month2"]
+    day2 = request.forms["day2"]
+    year2 = request.forms["year2"]
 
-    
+
     return render_template('confirmation-screens.html')
     
 
