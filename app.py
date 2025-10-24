@@ -39,8 +39,8 @@ def peer_evaluation_submit():
     error = False
 
     # Student evaluator
-    fname = request.form["fname"]
-    lname = request.form["lname"]
+    fname = request.form.get("fname")
+    lname = request.form.get("lname")
 
     if not fname:
         error = True
@@ -50,8 +50,8 @@ def peer_evaluation_submit():
         flash("Please provide your last name")
 
     # Student evaluatee
-    fname2 = request.form["fname2"]
-    lname2 = request.form["lname2"]
+    fname2 = request.form.get("fname2")
+    lname2 = request.form.get("lname2")
 
     if not fname2:
         error = True
@@ -61,15 +61,15 @@ def peer_evaluation_submit():
         flash("Please provide your evaluatee's last name")
 
     # Course ID
-    courseID = request.form["courseID"]
+    courseID = request.form.get("courseID")
     if not courseID:
         error = True
         flash("Please select valid course ID")
 
     # Completion date Month, Day, Year (Respectively)
-    month = request.form["month"]
-    day = request.form["day"]
-    year = request.form["year"]
+    month = request.form.get("month")
+    day = request.form.get("day")
+    year = request.form.get("year")
 
     if not month or not day or not year:
         error = True
@@ -80,9 +80,9 @@ def peer_evaluation_submit():
         year = int(year)
 
     # Evaluation due date month, day, year (respectively)
-    month2 = request.form["month2"]
-    day2 = request.form["day2"]
-    year2 = request.form["year2"]
+    month2 = request.form.get("month2")
+    day2 = request.form.get("day2")
+    year2 = request.form.get("year2")
 
     if not month2 or not day2 or not year2:
         error = True
@@ -96,78 +96,78 @@ def peer_evaluation_submit():
     #Values are marked as required -> this is just simpler
 
     #participation score
-    pscore = request.form["field1"]
+    pscore = request.form.get("field1")
     if not pscore:
         error = True
    
 
     #skillful score
-    sscore = request.form["field2"]
+    sscore = request.form.get("field2")
     if not sscore:
         error = True    
 
     #feedback score
-    fscore = request.form["field3"]
+    fscore = request.form.get("field3")
     if not fscore:
         error = True 
 
     #communication score
-    cscore = request.form["field4"]
+    cscore = request.form.get("field4")
     if not cscore:
         error = True
 
     #encouragement score
-    escore = request.form["field5"]
+    escore = request.form.get("field5")
     if not escore:
         error = True
 
     #integration score 
-    iscore = request.form["field6"]
+    iscore = request.form.get("field6")
     if not iscore:
         error = True
 
     #role score
-    rscore = request.form["field7"]
+    rscore = request.form.get("field7")
     if not rscore:
         error = True
 
     #goals score
-    gscore = request.form["field8"]
+    gscore = request.form.get("field8")
     if not gscore:
         error = True
 
     #reporting score
-    rescore = request.form["field9"]
+    rescore = request.form.get("field9")
     if not rescore:
         error = True
 
     #consistency score
-    coscore = request.form["field10"]
+    coscore = request.form.get("field10")
     if not coscore:
         error = True
     
     #optimism score
-    oscore = request.form["field11"]
+    oscore = request.form.get("field11")
     if not oscore:
         error = True
 
     #appropriate assertiveness score
-    ascore = request.form["field12"]
+    ascore = request.form.get("field12")
     if not ascore:
         error = True
 
     #healthy debate score
-    dscore = request.form["field13"]
+    dscore = request.form.get("field13")
     if not dscore:
         error = True
 
     #response to conflict score
-    rtcscore = request.form["field14"]
+    rtcscore = request.form.get("field14")
     if not rtcscore:
         error = True
 
     #overall score
-    ovscore = request.form["field15"]
+    ovscore = request.form.get("field15")
     if not ovscore:
         error = True
 
