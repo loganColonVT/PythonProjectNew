@@ -151,7 +151,7 @@ def peer_evaluation_submit():
     #Attempt Zappier addition? Do last though.
     if error:
         return render_template('peer-evaluation.html', fname=fname, lname=lname, fname2=fname2, lname2=lname2, courseID=courseID, month=month, day=day, year=year, month2=month2, day2=day2, year2=year2, pscore=pscore, 
-                               sscore=sscore, fscore=fscore, cscore=cscore, escore=escore, iscore=rscore, iscore=iscore, gscore=gscore, rescore=rescore, coscore=coscore, oscore=oscore, ascore=ascore, dscore=dscore, rtcscore=rtcscore, ovscore=ovscore)
+                               sscore=sscore, fscore=fscore, cscore=cscore, escore=escore, iscore=rscore, gscore=gscore, rescore=rescore, coscore=coscore, oscore=oscore, ascore=ascore, dscore=dscore, rtcscore=rtcscore, ovscore=ovscore)
     else:
         return render_template('confirmation-screens.html')
     
