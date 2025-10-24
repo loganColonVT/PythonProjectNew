@@ -36,6 +36,12 @@ def peer_evaluation():
 #there could be more or less than what is provided. Consult Daria/Shriya!!
 @app.route('/peer-evalsubmit', methods=['POST'])
 def peer_evaluation_submit():
+    def safe_int(value):
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
     error = False
 
     # Student evaluator
@@ -67,30 +73,22 @@ def peer_evaluation_submit():
         flash("Please select valid course ID")
 
     # Completion date Month, Day, Year (Respectively)
-    month = request.form.get("month")
-    day = request.form.get("day")
-    year = request.form.get("year")
+    month = safe_int(request.form.get("month"))
+    day = safe_int(request.form.get("day"))
+    year = safe_int(request.form.get("year"))
 
-    if not month or not day or not year:
+    if not all([month, day, year]):
         error = True
-        flash("Please enter a valid month, day and year for completion date")
-    else:
-        month = int(month)
-        day = int(day)
-        year = int(year)
-
+        flash("Please enter a valid numeric completion date.")
+    
     # Evaluation due date month, day, year (respectively)
-    month2 = request.form.get("month2")
-    day2 = request.form.get("day2")
-    year2 = request.form.get("year2")
+    month2 = safe_int(request.form.get("month2"))
+    day2 = safe_int(request.form.get("day2"))
+    year2 = safe_int(request.form.get("year2"))
 
-    if not month2 or not day2 or not year2:
+    if not all([month2, day2, year2]):
         error = True
-        flash("Please enter a valid month, day and year for due date")
-    else:
-        month2 = int(month2)
-        day2 = int(day2)
-        year2 = int(year2)
+        flash("Please enter a valid numeric due date.")
 
     #Radio is not included in error checking
     #Values are marked as required -> this is just simpler
