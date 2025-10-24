@@ -27,12 +27,39 @@ def get_started():
         return render_template('get-started.html')
     return render_template('get-started.html')
 
-@app.route('/peer-evaluation', methods=['GET', 'POST'])
+@app.route('/peer-evaluation')
 def peer_evaluation():
-    if request.method == 'POST':
-        # Handle form submission - redirect to confirmation page
-        return redirect(url_for('confirmation_screens'))
     return render_template('peer-evaluation.html')
+
+#REMINDER - When access to SQL DB -> replace hardcoded choices. 
+#Also ensure that you have the correct values to be added to database - 
+#there could be more or less than what is provided. Consult Daria/Shriya!!
+@app.route('/peer-evalsubmit', methods=['GET', 'POST'])
+def peer_evaluation():
+    # Student evaluator
+    fname = request.args["fname"]
+    lname = request.args["lname"]
+
+    # Student evaluatee
+    fname2 = request.args["fname2"]
+    lname2 = request.args["lname2"]
+
+    # Course ID
+    courseID = request.args["courseID"]
+
+    # Completion date Month, Day, Year (Respectively)
+    month = request.args["month"]
+    day = request.args["day"]
+    year = request.args["year"]
+
+    # Evaluation due date month, day, year (respectively)
+    month2 = request.args["month2"]
+    day2 = request.args["day2"]
+    year2 = request.args["year2"]
+
+    
+    return render_template('confirmation-screens.html')
+    
 
 @app.route('/student-dashboard')
 def student_dashboard():
