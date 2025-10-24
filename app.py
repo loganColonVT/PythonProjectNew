@@ -96,63 +96,101 @@ def peer_evaluation_submit():
     #Values are marked as required -> this is just simpler
 
     #participation score
-    pscore = int(request.form["field1"])
+    pscore = request.form["field1"]
+    if not pscore:
+        error = True
    
 
     #skillful score
-    sscore = int(request.form["field2"])
-    
+    sscore = request.form["field2"]
+    if not sscore:
+        error = True    
 
     #feedback score
-    fscore = int(request.form["field3"])
-    
+    fscore = request.form["field3"]
+    if not fscore:
+        error = True 
 
     #communication score
-    cscore = int(request.form["field4"])
-    
+    cscore = request.form["field4"]
+    if not cscore:
+        error = True
 
     #encouragement score
-    escore = int(request.form["field5"])
+    escore = request.form["field5"]
+    if not escore:
+        error = True
 
     #integration score 
-    iscore = int(request.form["field6"])
+    iscore = request.form["field6"]
+    if not iscore:
+        error = True
 
     #role score
-    rscore = int(request.form["field7"])
+    rscore = request.form["field7"]
+    if not rscore:
+        error = True
 
     #goals score
-    gscore = int(request.form["field8"])
+    gscore = request.form["field8"]
+    if not gscore:
+        error = True
 
     #reporting score
-    rescore = int(request.form["field9"])
+    rescore = request.form["field9"]
+    if not rescore:
+        error = True
 
     #consistency score
-    coscore = int(request.form["field10"])
+    coscore = request.form["field10"]
+    if not coscore:
+        error = True
     
     #optimism score
-    oscore = int(request.form["field11"])
+    oscore = request.form["field11"]
+    if not oscore:
+        error = True
 
     #appropriate assertiveness score
-    ascore = int(request.form["field12"])
+    ascore = request.form["field12"]
+    if not ascore:
+        error = True
 
     #healthy debate score
-    dscore = int(request.form["field13"])
+    dscore = request.form["field13"]
+    if not dscore:
+        error = True
 
     #response to conflict score
-    rtcscore = int(request.form["field14"])
+    rtcscore = request.form["field14"]
+    if not rtcscore:
+        error = True
 
     #overall score
-    ovscore = int(request.form["field15"])
+    ovscore = request.form["field15"]
+    if not ovscore:
+        error = True
 
-
-    #reminders:
-    #Log in functionality (Vital) - hardcode if you need to but include this.
-    #Do rest of radio forms. ensure conversions to ints
-    #Attempt Zappier addition? Do last though.
     if error:
-        return render_template('peer-evaluation.html', fname=fname, lname=lname, fname2=fname2, lname2=lname2, courseID=courseID, month=month, day=day, year=year, month2=month2, day2=day2, year2=year2, pscore=pscore, 
-                               sscore=sscore, fscore=fscore, cscore=cscore, escore=escore, iscore=rscore, gscore=gscore, rescore=rescore, coscore=coscore, oscore=oscore, ascore=ascore, dscore=dscore, rtcscore=rtcscore, ovscore=ovscore)
+        flash("Ensure all parts of form are answered.")
+        return redirect(url_for('peer_evaluation'))
     else:
+        pscore=int(pscore)
+        sscore=int(sscore)
+        fscore=int(fscore)
+        cscore=int(cscore)
+        escore=int(escore)
+        iscore=int(iscore)
+        rscore=int(rscore)
+        gscore=int(gscore)
+        rescore=int(rescore)
+        coscore=int(coscore)
+        oscore=int(oscore)
+        ascore=int(ascore)
+        dscore=int(dscore)
+        rtcscore=int(rtcscore)
+        ovscore=int(ovscore)
+
         return render_template('confirmation-screens.html')
     
 
