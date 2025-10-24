@@ -15,7 +15,8 @@ def confirmation_screens():
 @app.route('/login')
 def login():
     return render_template('login.html')
-app.route('/loginSubmit', methods=['POST'])
+
+@app.route('/loginSubmit', methods=['POST'])
 def loginSubmit():
     #KEEP IN MIND - no DB connection. As of now, hard coded.
     error = False
