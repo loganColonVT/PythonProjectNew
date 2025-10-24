@@ -34,82 +34,126 @@ def peer_evaluation():
 #REMINDER - When access to SQL DB -> replace hardcoded choices. 
 #Also ensure that you have the correct values to be added to database - 
 #there could be more or less than what is provided. Consult Daria/Shriya!!
-@app.route('/peer-evalsubmit', methods=['GET', 'POST'])
+@app.route('/peer-evalsubmit', methods=['POST'])
 def peer_evaluation_submit():
+    error = False
+
     # Student evaluator
     fname = request.form["fname"]
     lname = request.form["lname"]
+
+    if not fname:
+        error = True
+        flash("Please provide your first name")
+    if not lname:
+        error = True
+        flash("Please provide your last name")
 
     # Student evaluatee
     fname2 = request.form["fname2"]
     lname2 = request.form["lname2"]
 
+    if not fname2:
+        error = True
+        flash("Please provide your evaluatee's first name")
+    if not lname2:
+        error = True
+        flash("Please provide your evaluatee's last name")
+
     # Course ID
     courseID = request.form["courseID"]
+    if not courseID:
+        error = True
+        flash("Please select valid course ID")
 
     # Completion date Month, Day, Year (Respectively)
     month = request.form["month"]
     day = request.form["day"]
     year = request.form["year"]
 
+    if not month or not day or not year:
+        error = True
+        flash("Please enter a valid month, day and year for completion date")
+    else:
+        month = int(month)
+        day = int(day)
+        year = int(year)
+
     # Evaluation due date month, day, year (respectively)
     month2 = request.form["month2"]
     day2 = request.form["day2"]
     year2 = request.form["year2"]
 
-    #participation score IMPORTANT REMINDER - ENSURE USER SELECTS
-    #A VALUE AND THAT THE VALUE IS CONVERTED TO INT
-    pscore = request.form["field1"]
+    if not month2 or not day2 or not year2:
+        error = True
+        flash("Please enter a valid month, day and year for due date")
+    else:
+        month2 = int(month2)
+        day2 = int(day2)
+        year2 = int(year2)
+
+    #Radio is not included in error checking
+    #Values are marked as required -> this is just simpler
+
+    #participation score
+    pscore = int(request.form["field1"])
+   
 
     #skillful score
-    sscore = request.form["field2"]
+    sscore = int(request.form["field2"])
+    
 
     #feedback score
-    fscore = request.form["field3"]
+    fscore = int(request.form["field3"])
+    
 
     #communication score
-    cscore = request.form["field4"]
+    cscore = int(request.form["field4"])
+    
 
     #encouragement score
-    escore = request.form["field5"]
+    escore = int(request.form["field5"])
 
     #integration score 
-    iscore = request.form["field6"]
+    iscore = int(request.form["field6"])
 
     #role score
-    rscore = request.form["field7"]
+    rscore = int(request.form["field7"])
 
     #goals score
-    gscore = request.form["field8"]
+    gscore = int(request.form["field8"])
 
     #reporting score
-    rescore = request.form["field9"]
+    rescore = int(request.form["field9"])
 
     #consistency score
-    coscore = request.form["field10"]
+    coscore = int(request.form["field10"])
     
     #optimism score
-    oscore = request.form["field11"]
+    oscore = int(request.form["field11"])
 
     #appropriate assertiveness score
-    ascore = request.form["field12"]
+    ascore = int(request.form["field12"])
 
     #healthy debate score
-    dscore = request.form["field13"]
+    dscore = int(request.form["field13"])
 
     #response to conflict score
-    rtcscore = request.form["field14"]
+    rtcscore = int(request.form["field14"])
 
     #overall score
-    ovscore = request.form["field15"]
+    ovscore = int(request.form["field15"])
 
 
     #reminders:
     #Log in functionality (Vital) - hardcode if you need to but include this.
     #Do rest of radio forms. ensure conversions to ints
     #Attempt Zappier addition? Do last though.
-    return ovscore
-    #return render_template('confirmation-screens.html')
+    if error:
+        return render_template('peer-evaluation.html', fname=fname, lname=lname, fname2=fname2, lname2=lname2, courseID=courseID, month=month, day=day, year=year, month2=month2, day2=day2, year2=year2, pscore=pscore, 
+                               sscore=sscore, fscore=fscore, cscore=cscore, escore=escore, iscore=rscore, iscore=iscore, gscore=gscore, rescore=rescore, coscore=coscore, oscore=oscore, ascore=ascore, dscore=dscore, rtcscore=rtcscore, ovscore=ovscore)
+    else:
+        return render_template('confirmation-screens.html')
     
 
 @app.route('/student-dashboard')

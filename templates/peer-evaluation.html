@@ -2198,9 +2198,22 @@
             
 
             
+          <style>
+            .error-message {
+              color:firebrick
+            }
+          </style>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li class="error-message">{{message}}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+          {% endwith %}
 
-            
-
+        {% endblock content %}
             
               <fieldset id="cff8453b-5fe8-4e4e-b2db-688cb487444c" class="form-item fields name required">
                 
@@ -2457,6 +2470,9 @@
                         class="field-element"
                         type="text"
                         maxlength="2"
+                        type="number"
+                        min="1"
+                        max="12"
                         data-title="Month"
                         name="month"
                         
@@ -2470,6 +2486,9 @@
                       class="field-element"
                       type="text"
                       maxlength="2"
+                      type="number"
+                      min="1"
+                      max="31"
                       data-title="Day"
                       name="day"
                       
@@ -2483,6 +2502,9 @@
                         class="field-element"
                         type="text"
                         maxlength="4"
+                        minlength="4"
+                        type="number"
+                        min="2020"
                         data-title="Year"
                         name="year"
                         
@@ -2550,6 +2572,9 @@
                         class="field-element"
                         type="text"
                         maxlength="2"
+                        type="number"
+                        min="1"
+                        max="12"
                         data-title="Month"
                         name="month2"
                         
@@ -2563,6 +2588,9 @@
                       class="field-element"
                       type="text"
                       maxlength="2"
+                      type="number"
+                      min="1"
+                      max="31"
                       data-title="Day"
                       name="day2"
                       
@@ -2576,6 +2604,9 @@
                         class="field-element"
                         type="text"
                         maxlength="4"
+                        type="number"
+                        min="2020"
+                        minlength="4"
                         data-title="Year"
                         name="year2"
                         
@@ -2626,7 +2657,7 @@
               <fieldset
                   id="2b0be2f5-0b3c-4c58-947d-14576b41739d"
                   class="form-item field radio"
-                  
+                  required
               >
                 
             <legend class="title">
@@ -2636,7 +2667,7 @@
           
                 <div class="description">Participates actively and accepts a fair share of the group work</div>
                 
-                <div class="option"><label><input type="radio" name="field1" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field1" value="0"required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field1" value="1"/> 1= Sometimes</label></div>
                 
@@ -2705,7 +2736,7 @@
           
                 <div class="description">Works skillfully on assigned tasks and completes them on time</div>
                 
-                <div class="option"><label><input type="radio" name="field2" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field2" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field2" value="1"/> 1= Sometimes</label></div>
                 
@@ -2774,7 +2805,7 @@
           
                 <div class="description">Gives timely, constructive feedback to team members, in the appropriate format</div>
                 
-                <div class="option"><label><input type="radio" name="field3" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field3" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field3" value="1"/> 1= Sometimes</label></div>
                 
@@ -2843,7 +2874,7 @@
           
                 <div class="description">Communicates actively and constructively</div>
                 
-                <div class="option"><label><input type="radio" name="field4" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field4" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field4" value="1"/> 1= Sometimes</label></div>
                 
@@ -2912,7 +2943,7 @@
           
                 <div class="description">Encourages all perspective be considered and acknowledges contributions of others</div>
                 
-                <div class="option"><label><input type="radio" name="field5" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field5" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field5" value="1"/> 1= Sometimes</label></div>
                 
@@ -2981,7 +3012,7 @@
           
                 <div class="description">Constructively builds on contributions of others and integrates own work with work of others</div>
                 
-                <div class="option"><label><input type="radio" name="field6" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field6" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field6" value="1"/> 1= Sometimes</label></div>
                 
@@ -3050,7 +3081,7 @@
           
                 <div class="description">Takes on an appropriate role in group (e.g. leader, note taker)</div>
                 
-                <div class="option"><label><input type="radio" name="field7" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field7" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field7" value="1"/> 1= Sometimes</label></div>
                 
@@ -3119,7 +3150,7 @@
           
                 <div class="description">Clarifies goals and plans the project</div>
                 
-                <div class="option"><label><input type="radio" name="field8" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field8" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field8" value="1"/> 1= Sometimes</label></div>
                 
@@ -3188,7 +3219,7 @@
           
                 <div class="description">Reports to team on progress</div>
                 
-                <div class="option"><label><input type="radio" name="field9" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field9" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field9" value="1"/> 1= Sometimes</label></div>
                 
@@ -3257,7 +3288,7 @@
           
                 <div class="description">Ensures consistency between words, tone, facial expression and body language</div>
                 
-                <div class="option"><label><input type="radio" name="field10" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field10" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field10" value="1"/> 1= Sometimes</label></div>
                 
@@ -3326,7 +3357,7 @@
           
                 <div class="description">Expresses positivity and optimism about team members and project</div>
                 
-                <div class="option"><label><input type="radio" name="field11" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field11" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field11" value="1"/> 1= Sometimes</label></div>
                 
@@ -3395,7 +3426,7 @@
           
                 <div class="description">Displays appropriate assertiveness: neither dominating, submissive, nor passive aggressive</div>
                 
-                <div class="option"><label><input type="radio" name="field12" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field12" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field12" value="1"/> 1= Sometimes</label></div>
                 
@@ -3464,7 +3495,7 @@
           
                 <div class="description">Contributes appropriately to healthy debate</div>
                 
-                <div class="option"><label><input type="radio" name="field13" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field13" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field13" value="1"/> 1= Sometimes</label></div>
                 
@@ -3533,7 +3564,7 @@
           
                 <div class="description">Responds to and manages direct/indirect conflict constructively and effectively</div>
                 
-                <div class="option"><label><input type="radio" name="field14" value="0"/> 0= Never</label></div>
+                <div class="option"><label><input type="radio" name="field14" value="0" required/> 0= Never</label></div>
                 
                 <div class="option"><label><input type="radio" name="field14" value="1"/> 1</label></div>
                 
