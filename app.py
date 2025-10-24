@@ -61,11 +61,55 @@ def peer_evaluation_submit():
     #A VALUE AND THAT THE VALUE IS CONVERTED TO INT
     pscore = request.forms["field1"]
 
+    #skillful score
+    sscore = request.forms["field2"]
+
+    #feedback score
+    fscore = request.forms["field3"]
+
+    #communication score
+    cscore = request.forms["field4"]
+
+    #encouragement score
+    escore = request.forms["field5"]
+
+    #integration score 
+    iscore = request.forms["field6"]
+
+    #role score
+    rscore = request.forms["field7"]
+
+    #goals score
+    gscore = request.forms["field8"]
+
+    #reporting score
+    rscore = request.forms["field9"]
+
+    #consistency score
+    coscore = request.forms["field10"]
+    
+    #optimism score
+    oscore = request.forms["field11"]
+
+    #appropriate assertiveness score
+    ascore = request.forms["field12"]
+
+    #healthy debate score
+    dscore = request.forms["field13"]
+
+    #response to conflict score
+    rtcscore = request.forms["field14"]
+
+    #overall score
+    ovscore = request.forms["field15"]
+
+
     #reminders:
     #Log in functionality (Vital) - hardcode if you need to but include this.
     #Do rest of radio forms. ensure conversions to ints
     #Attempt Zappier addition? Do last though.
-    return render_template('confirmation-screens.html')
+    return ovscore
+    #return render_template('confirmation-screens.html')
     
 
 @app.route('/student-dashboard')
