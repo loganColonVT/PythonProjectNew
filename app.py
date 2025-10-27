@@ -1,12 +1,34 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
+import os
+import mysql.connector
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # Required for flash messages
+
+# DB connection
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host=os.environ.get('DB_HOST'),
+        user=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASSWORD'),
+        database=os.environ.get('DB_NAME'),
+        port=os.environ.get('DB_PORT')
+    )
+    return connection
 
 # Home route
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/testsql')
+def tester():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("select * from professor where ProfessorID=1;")
+    result = cursor.fetchall()
+    return result
+
 
 @app.route('/confirmation-screens')
 def confirmation_screens():
