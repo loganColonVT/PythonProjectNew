@@ -25,7 +25,7 @@ def home():
 def tester():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("select * from professor where ProfessorID=1;")
+    cursor.execute("select Email from professor where ProfessorID=1;")
     result = cursor.fetchall()
     return result
 
