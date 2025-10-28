@@ -42,7 +42,7 @@ def testSubmit():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    sql = 'INSERT INTO studentgroup (GroupID, CourseID, GroupName) VALUES (21, %s, %s)'
+    sql = 'INSERT INTO studentgroup (GroupID, CourseID, GroupName) VALUES (22, %s, %s)'
     values = (courseId, groupName)
 
     cursor.execute(sql, values)
