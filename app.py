@@ -23,13 +23,14 @@ def home():
 
 @app.route('/testsql')
 def tester():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("select Email from professor where ProfessorID=1;")
-    result = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return result
+    return render_template('liveDemoTest.html')
+    # conn = get_db_connection()
+    # cursor = conn.cursor()
+    # cursor.execute("select Email from professor where ProfessorID=1;")
+    # result = cursor.fetchall()
+    # cursor.close()
+    # conn.close()
+    # return result
 
 
 @app.route('/confirmation-screens')
