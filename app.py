@@ -23,14 +23,32 @@ def home():
 
 @app.route('/testsql')
 def tester():
-    return render_template('liveDemoTest.html')
-    # conn = get_db_connection()
-    # cursor = conn.cursor()
-    # cursor.execute("select Email from professor where ProfessorID=1;")
-    # result = cursor.fetchall()
-    # cursor.close()
-    # conn.close()
-    # return result
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('select courseID from course;')
+    courseIDs = [row[0] for row in cursor.fetchall()]
+
+    cursor.close()
+    conn.close()
+
+    return render_template('liveDemoTest.html', courseIDs=courseIDs)
+
+@app.route('/testSubmit', methods=['POST'])
+def testSubmit():
+    courseId = request.form.get("courseID")
+    groupName = request.form.get("groupName")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    sql = 'INSERT INTO studentgroup (courseID, groupName) VALUES (%s, %s)'
+    values = (courseId, groupName)
+
+    cursor.execute(sql, values)
+    conn.commit()
+
+    return 'Successful submission'
 
 
 @app.route('/confirmation-screens')

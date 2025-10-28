@@ -3,29 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Group Form</title>
+    <title>LIVE SQL DEMO</title>
 </head>
 <body>
-    <h2>Course Group Submission</h2>
+    <h2>Sample Course Group Submission</h2>
 
-    <form action="/submit" method="POST">
-        <!-- Dropdown for Course ID -->
+    <form action="/testSubmit" method="POST">
+
         <label for="courseID">Select Course ID:</label>
-        <select id="courseID" name="courseID" required>
-            <option value="">--Select a Course--</option>
-            <option value="BIT4444">BIT4444</option>
-            <option value="ACCT2115">ACCT2115</option>
-            <option value="FIN3105">FIN3105</option>
-            <option value="MKTG3104">MKTG3104</option>
-        </select>
+        <select id="select-test" name="courseID">
+                  {% for id in courseIDs %}
+                    <option value="{{ id }}">{{ id }}</option>
+                  {% endfor %}
+                </select>
         <br><br>
 
-        <!-- Text input for Group Name -->
         <label for="groupName">Group Name:</label>
         <input type="text" id="groupName" name="groupName" placeholder="Enter your group name" required>
         <br><br>
 
-        <!-- Submit button -->
         <button type="submit">Submit</button>
     </form>
 
