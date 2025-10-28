@@ -2395,19 +2395,12 @@
             </label>
           
                 
-                
-                <select
-                    id="select-1da02bf5-2a58-401a-ad16-ff7c6a2ecdd6-field"
-                    name="courseID"
-                    
-                >
-                  
-                    <option value="Option 1">BIT4454</option>
-                  
-                    <option value="Option 2">BIT3321</option>
-                  
-                  <optgroup label=""></optgroup>
+                <select id="select-1da02bf5-2a58-401a-ad16-ff7c6a2ecdd6-field" name="courseID">
+                  {% for id in courseIDs %}
+                    <option value="{{ id }}">{{ id }}</option>
+                  {% endfor %}
                 </select>
+                
               </div>
             
 

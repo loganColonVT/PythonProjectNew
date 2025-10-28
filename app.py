@@ -27,6 +27,8 @@ def tester():
     cursor = conn.cursor()
     cursor.execute("select Email from professor where ProfessorID=1;")
     result = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return result
 
 
@@ -69,7 +71,16 @@ def get_started():
 
 @app.route('/peer-evaluation')
 def peer_evaluation():
-    return render_template('peer-evaluation.html')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('select courseCode from course;')
+    courseIDs = [row[0] for row in cursor.fetchall()]
+
+    cursor.close()
+    conn.close()
+
+    return render_template('peer-evaluation.html', courseIDs=courseIDs)
 
 #REMINDER - When access to SQL DB -> replace hardcoded choices. 
 #Also ensure that you have the correct values to be added to database - 
