@@ -270,5 +270,13 @@ def student_dashboard():
 def team():
     return render_template('team.html')
 
+@app.route('/professor-dashboard')
+def professor_dashboard():
+    return render_template('professor-dashboard.html')
+
+@app.route('/roster-completion')
+def roster_completion():
+    return render_template('roster-completion.html')
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
