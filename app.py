@@ -278,5 +278,9 @@ def professor_dashboard():
 def roster_completion():
     return render_template('roster-completion.html')
 
+@app.route('/eval-creation.html')
+def eval_creation():
+    return render_template('eval-creation.html')
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
