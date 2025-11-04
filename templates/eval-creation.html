@@ -2008,39 +2008,34 @@ button:hover {
   background-color: #00257a !important;
 }
 
-.for-title {
+.form-title {
   color: #00257a !important;
 }
 </style>
 <!-- FORM -->
-<form id="schedule-eval-form" action="/scheduleSubmit" method="POST">
-  <h2 class="form-title">Schedule Evaluation</h2>
+<div id="block-e879b03e151e084b3cba">
+  <div class="form-wrapper">
+    <div class="form-inner-wrapper">
+      <form id="schedule-eval-form" action="/scheduleSubmit" method="POST">
+        <h2 class="form-title">Schedule Evaluation</h2>
 
-  <div class="form-item">
-    <label for="due-date">Due Date: *</label>
-    <input
-      type="date"
-      id="due-date"
-      name="due_date"
-      required
-    />
-  </div>
+        <div class="form-item">
+          <label for="due-date">Due Date: <span class="required">*</span></label>
+          <input type="date" id="due-date" name="due_date" required>
+        </div>
 
-  <div class="form-item">
-    <label for="due-time">Time: *</label>
-    <input
-      type="time"
-      id="due-time"
-      name="due_time"
-      required
-    />
-    <p class="caption-text">in Eastern Time</p>
-  </div>
+        <div class="form-item">
+          <label for="due-time">Time: <span class="required">*</span></label>
+          <input type="time" id="due-time" name="due_time" required>
+          <p class="caption-text">in Eastern Time</p>
+        </div>
 
-  <div class="form-item">
-    <button type="submit">Schedule Evaluation</button>
+        <button type="submit">Schedule Evaluation</button>
+      </form>
+    </div>
   </div>
-</form>
+</div>
+
   
   
 
