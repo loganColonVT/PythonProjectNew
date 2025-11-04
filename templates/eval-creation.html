@@ -182,6 +182,9 @@
         visibility: visible !important;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
         border: 1px solid #ddd !important; /* Simple border instead of blue */
+        max-width: none !important;
+        width: 90% !important;
+        padding: 40px !important;
       }
       
       /* Style the send button to stretch across the form */
@@ -1965,52 +1968,56 @@
 
 <style>
   form {
-  max-width: 400px;
-  margin: 40px auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
-  font-family: sans-serif;
+  max-width: 400px !important;
+  margin: 40px auto !important;
+  background: #fff !important;
+  padding: 20px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1) !important;
+  font-family: sans-serif !important;
 }
 
 .form-item {
-  margin-bottom: 15px;
+  margin-bottom: 15px !important;
 }
 
 label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: bold;
+  display: block !important;
+  margin-bottom: 6px !important;
+  font-weight: bold !important;
 }
 
 input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 100% !important;
+  padding: 8px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
 }
 
 button {
-  background-color: #0033A1;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  width: 100%;
-  border-radius: 4px;
-  cursor: pointer;
+  background-color: #0033A1 !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 10px !important;
+  width: 100% !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
 }
 
 button:hover {
-  background-color: #00257a;
+  background-color: #00257a !important;
+}
+
+.for-title {
+  color: #00257a !important;
 }
 </style>
 <!-- FORM -->
 <form id="schedule-eval-form" action="/scheduleSubmit" method="POST">
-  <h3>Schedule Evaluation</h3>
+  <h2 class="form-title">Schedule Evaluation</h2>
 
   <div class="form-item">
-    <label for="due-date">Due Date: <span class="required">*</span></label>
+    <label for="due-date">Due Date: *</label>
     <input
       type="date"
       id="due-date"
@@ -2020,7 +2027,7 @@ button:hover {
   </div>
 
   <div class="form-item">
-    <label for="due-time">Time: <span class="required">*</span></label>
+    <label for="due-time">Time: *</label>
     <input
       type="time"
       id="due-time"
