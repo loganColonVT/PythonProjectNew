@@ -283,7 +283,7 @@ def eval_creation():
     return render_template('eval-creation.html')
 
 @app.route('/viewtest')
-def tester():
+def proftest():
     return render_template('professor-dashboard copy.html')
 
 if __name__ == '__main__':
