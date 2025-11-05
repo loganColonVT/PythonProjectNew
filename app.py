@@ -282,5 +282,9 @@ def roster_completion():
 def eval_creation():
     return render_template('eval-creation.html')
 
+@app.route('/viewtest')
+def tester():
+    return render_template('professor-dashboard copy.html')
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
