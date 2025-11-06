@@ -282,7 +282,7 @@ def roster_completion():
 def eval_creation():
     courseCode = request.form.get('courseCode')
 
-    return render_template('eval-creation.html', courseCode)
+    return render_template('eval-creation.html', courseCode=courseCode)
 
 @app.route('/viewtest')
 def proftest():
