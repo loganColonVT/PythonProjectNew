@@ -25,27 +25,112 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/site.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/static.css') }}">
     <style>
-      .active-courses-header {
+      /* Override Squarespace styles for Active Courses section */
+      .sqs-html-content .active-courses-header,
+      .active-courses-header,
+      h2.active-courses-header {
         color: #0033A1 !important;
         font-size: 1.5em !important;
         margin-bottom: 1rem !important;
         text-align: left !important;
         display: block !important;
         width: 100% !important;
+        opacity: 1 !important;
+        visibility: visible !important;
       }
 
+      .sqs-html-content .courses-container,
       .courses-container {
         display: grid !important;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+        grid-template-columns: repeat(4, minmax(200px, 1fr)) !important;
         gap: 20px !important;
         margin-bottom: 2rem !important;
         justify-items: center !important;
         width: 100% !important;
-        max-width: 1000px !important;
+        max-width: 1200px !important;
         margin-left: auto !important;
         margin-right: auto !important;
+        grid-auto-flow: row !important;
+        position: relative !important;
+        z-index: 10 !important;
+        overflow: visible !important;
       }
 
+      /* Ensure container breaks out of Squarespace constraints */
+      #block-yui_3_17_2_1_1761751310716_41249 .courses-container,
+      .fe-block-yui_3_17_2_1_1761751310716_41249 .courses-container {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(200px, 1fr)) !important;
+        width: 100% !important;
+        max-width: 1200px !important;
+      }
+
+      /* Override Squarespace fluid-engine constraints */
+      .sqs-html-content,
+      .sqs-block-content,
+      [data-fluid-engine="true"] {
+        position: relative !important;
+      }
+
+      .sqs-html-content .courses-container {
+        position: relative !important;
+        z-index: 10 !important;
+      }
+
+      /* Override the parent fluid-engine grid for our courses section */
+      .fe-6902330dc8ebac31ecff1b34 .fe-block-yui_3_17_2_1_1761751310716_41249 {
+        grid-column: 1 / -1 !important;
+        display: block !important;
+      }
+
+      .fe-6902330dc8ebac31ecff1b34 .fe-block-yui_3_17_2_1_1761751310716_41249 .sqs-block-content,
+      .fe-6902330dc8ebac31ecff1b34 .fe-block-yui_3_17_2_1_1761751310716_41249 .sqs-html-content {
+        display: block !important;
+        width: 100% !important;
+      }
+
+      /* Override Squarespace block grid constraints */
+      .fe-block-f24fd2da3e61c3baa899 .sqs-block-content,
+      .fe-block-f24fd2da3e61c3baa899 .sqs-html-content {
+        display: block !important;
+        width: 100% !important;
+      }
+
+      .fe-block-f24fd2da3e61c3baa899 {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      /* Override Squarespace block that contains courses */
+      .fe-block-yui_3_17_2_1_1761751310716_41249 {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .fe-block-yui_3_17_2_1_1761751310716_41249 .sqs-block-content,
+      .fe-block-yui_3_17_2_1_1761751310716_41249 .sqs-html-content {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      @media (max-width: 1200px) {
+        .sqs-html-content .courses-container,
+        .courses-container {
+          grid-template-columns: repeat(3, minmax(200px, 1fr)) !important;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .sqs-html-content .courses-container,
+        .courses-container {
+          grid-template-columns: repeat(2, minmax(200px, 1fr)) !important;
+        }
+      }
+
+      .sqs-html-content .course-card,
       .course-card {
         background-color: #f9f9f9 !important;
         border: 1px solid #ccc !important;
@@ -55,31 +140,65 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
         transition: transform 0.2s ease !important;
         width: 100% !important;
-        max-width: 230px !important;
+        max-width: 250px !important;
+        min-width: 200px !important;
         display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        position: relative !important;
+        float: none !important;
+        clear: both !important;
+      }
+
+      /* Force course cards to break out of Squarespace grid */
+      .courses-container > .course-card {
+        display: block !important;
+        float: none !important;
+        position: relative !important;
       }
 
       .course-card:hover {
         transform: translateY(-5px) !important;
       }
 
+      .sqs-html-content .course-card h3,
+      .course-card h3,
+      .course-card .course-code,
       .course-code {
         font-size: 1.1em !important;
         font-weight: bold !important;
         color: #0033A1 !important;
         margin-bottom: 0.5rem !important;
+        margin-top: 0 !important;
         display: block !important;
         visibility: visible !important;
+        opacity: 1 !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
       }
 
+      .sqs-html-content .course-card p,
+      .course-card p,
+      .course-card .course-title,
       .course-title {
         color: #444 !important;
         font-size: 0.95em !important;
         margin-bottom: 1rem !important;
+        margin-top: 0 !important;
         display: block !important;
         visibility: visible !important;
+        opacity: 1 !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
       }
 
+      .sqs-html-content .course-card form,
+      .course-card form {
+        display: block !important;
+        margin-top: 15px !important;
+      }
+
+      .sqs-html-content .view-course-btn,
       .view-course-btn {
         background-color: #8B6A39 !important;
         color: white !important;
@@ -90,6 +209,9 @@
         font-weight: bold !important;
         display: inline-block !important;
         width: auto !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        font-size: 1em !important;
       }
 
       .view-course-btn:hover {
@@ -97,6 +219,7 @@
       }
 
       @media (max-width: 768px) {
+        .sqs-html-content .courses-container,
         .courses-container {
           grid-template-columns: 1fr !important;
           gap: 1rem !important;
