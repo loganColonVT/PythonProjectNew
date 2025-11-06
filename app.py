@@ -288,7 +288,7 @@ def proftest():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT courseCode, courseTime FROM courses;")
+    cursor.execute("SELECT courseCode, courseTime FROM course;")
     courses = cursor.fetchall()
 
     conn.close()
