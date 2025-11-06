@@ -284,7 +284,17 @@ def eval_creation():
 
 @app.route('/viewtest')
 def proftest():
-    return render_template('professor-dashboard copy.html')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT courseCode, courseTime FROM courses;")
+    courses = cursor.fetchall()
+
+    conn.close()
+    cursor.close()
+
+    return render_template('professor-dashboard copy.html', courses=courses)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
