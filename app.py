@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import os
 import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # Required for flash messages
+app.secret_key = 'fdshj3838aslenddk232bnhdfs'  # Required for flash messages
 
 # DB connection
 def get_db_connection():
@@ -61,23 +61,35 @@ def login():
 
 @app.route('/loginSubmit', methods=['POST'])
 def loginSubmit():
-    #KEEP IN MIND - no DB connection. As of now, hard coded.
-    error = False
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
     email = request.form.get("email")
     password = request.form.get("password")
 
-    if email != 'logan@vt.edu':
+    # Check credentials
+    cursor.execute("SELECT ProfessorID, Password FROM professor WHERE Email = %s", (email,))
+    result = cursor.fetchone()
+
+    error = False
+    if result is None:
         error = True
-        
-    if password != 'pass':
-        error = True
+    else:
+        professor_id, db_password = result
+        if password != db_password:
+            error = True
+
+    cursor.close()
+    conn.close()
 
     if error:
-        flash("Invalid email or password")
+        flash("Invalid email or password", "error")
         return redirect(url_for('login'))
-    if request.method == 'POST':
-        # Handle form submission - redirect to student dashboard
-        return redirect(url_for('student_dashboard'))
+    else:
+        #Store the professor's ID in the session
+        session['professor_id'] = professor_id
+        return redirect(url_for('professor_dashboard'))
     
 
 @app.route('/get-started', methods=['POST'])
@@ -270,10 +282,6 @@ def student_dashboard():
 def team():
     return render_template('team.html')
 
-@app.route('/professor-dashboard')
-def professor_dashboard():
-    return render_template('professor-dashboard.html')
-
 @app.route('/roster-completion')
 def roster_completion():
     return render_template('roster-completion.html')
@@ -287,31 +295,54 @@ def eval_creation():
 @app.route('/evalCreationSubmit', methods=['POST'])
 def eval_creation_submit():
     dueDate = request.form.get('due_date')
-
-    return dueDate
-
-@app.route('/viewtest')
-def proftest():
+    courseCode = request.form.get('courseCode')
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT courseCode, courseTime FROM course;")
+    # Update the EvalDueDate for the matching course
+    update_query = """
+        UPDATE courses
+        SET EvalDueDate = %s
+        WHERE CourseCode = %s
+    """
+    cursor.execute(update_query, (dueDate, courseCode))
+
+    # Commit and close
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return 'Change succesful'
+
+@app.route('/professorDashboard')
+def professor_dashboard():
+
+    professor_id = session.get('professor_id')
+
+    if not professor_id:
+        flash("You must log in first.")
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    #Only show courses belonging to this professor
+    cursor.execute("""
+        SELECT CourseCode, CourseTime
+        FROM course
+        WHERE ProfessorID = %s
+    """, (professor_id,))
+
     rows = cursor.fetchall()
 
     # Convert tuples to dictionaries
-    courses = []
-    for row in rows:
-        courses.append({
-            'courseCode': row[0],
-            'courseTime': row[1]
-        })
+    courses = [{'courseCode': row[0], 'courseTime': row[1]} for row in rows]
 
-    conn.close()
     cursor.close()
+    conn.close()
 
-
-    return render_template('professor-dashboard copy.html', courses=courses)
+    return render_template('professor-dashboard.html', courses=courses)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)

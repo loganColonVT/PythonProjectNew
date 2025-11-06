@@ -2019,6 +2019,8 @@ button:hover {
       <form id="schedule-eval-form" action="/evalCreationSubmit" method="POST">
         <h2 class="form-title">Schedule Evaluation</h2>
 
+        <input type="hidden" name="courseCode" value="{{ courseCode }}">
+
         <div class="form-item">
           <label for="due-date">Due Date: <span class="required">*</span></label>
           <input type="date" id="due-date" name="due_date" required>
