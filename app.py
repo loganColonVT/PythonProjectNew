@@ -284,6 +284,12 @@ def eval_creation():
 
     return render_template('eval-creation.html', courseCode=courseCode)
 
+@app.route('/evalCreationSubmit', methods=['POST'])
+def eval_creation_submit():
+    dueDate = request.form.get('due_date')
+
+    return dueDate
+
 @app.route('/viewtest')
 def proftest():
 
