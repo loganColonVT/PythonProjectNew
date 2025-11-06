@@ -278,7 +278,7 @@ def professor_dashboard():
 def roster_completion():
     return render_template('roster-completion.html')
 
-@app.route('/eval-creation')
+@app.route('/eval-creation', methods=['POST'])
 def eval_creation():
     return render_template('eval-creation.html')
 
