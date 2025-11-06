@@ -289,10 +289,19 @@ def proftest():
     cursor = conn.cursor()
 
     cursor.execute("SELECT courseCode, courseTime FROM course;")
-    courses = cursor.fetchall()
+    rows = cursor.fetchall()
+
+    # Convert tuples to dictionaries
+    courses = []
+    for row in rows:
+        courses.append({
+            'courseCode': row[0],
+            'courseTime': row[1]
+        })
 
     conn.close()
     cursor.close()
+
 
     return render_template('professor-dashboard copy.html', courses=courses)
 
