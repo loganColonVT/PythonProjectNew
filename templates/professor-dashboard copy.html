@@ -177,6 +177,29 @@
         text-align: center !important;
       }
 
+      /* Aggressive text visibility rules for Squarespace */
+      [data-sqsp-text-block-content] .course-card h3,
+      [data-sqsp-text-block-content] .course-card .course-code,
+      [data-sqsp-text-block-content] h3.course-code,
+      .sqs-html-content[data-sqsp-text-block-content] .course-card h3,
+      .sqs-html-content[data-sqsp-text-block-content] .course-card .course-code {
+        font-size: 1.1em !important;
+        font-weight: bold !important;
+        color: #0033A1 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        width: auto !important;
+        max-width: 100% !important;
+      }
+
       .sqs-html-content .course-card p,
       .course-card p,
       .course-card .course-title,
@@ -190,6 +213,130 @@
         opacity: 1 !important;
         line-height: 1.4 !important;
         text-align: center !important;
+      }
+
+      /* Aggressive text visibility rules for Squarespace */
+      [data-sqsp-text-block-content] .course-card p,
+      [data-sqsp-text-block-content] .course-card .course-title,
+      [data-sqsp-text-block-content] p.course-title,
+      .sqs-html-content[data-sqsp-text-block-content] .course-card p,
+      .sqs-html-content[data-sqsp-text-block-content] .course-card .course-title {
+        color: #444 !important;
+        font-size: 0.95em !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        width: auto !important;
+        max-width: 100% !important;
+      }
+
+      /* Override any Squarespace text hiding */
+      .sqs-html-content[data-sqsp-text-block-content] * {
+        white-space: normal !important;
+      }
+
+      .course-card h3,
+      .course-card p {
+        text-indent: 0 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        word-spacing: normal !important;
+      }
+
+      /* Force all text inside course cards to be visible */
+      .course-card * {
+        color: inherit !important;
+        font-size: inherit !important;
+      }
+
+      .course-card h3.course-code,
+      .course-card h3 {
+        color: #0033A1 !important;
+        font-size: 1.1em !important;
+      }
+
+      .course-card p.course-title,
+      .course-card p {
+        color: #444 !important;
+        font-size: 0.95em !important;
+      }
+
+      /* Prevent Squarespace from hiding text with clip-path or other tricks */
+      .course-card,
+      .course-card * {
+        clip-path: none !important;
+        clip: auto !important;
+        -webkit-clip-path: none !important;
+      }
+
+      /* Ensure parent containers don't hide children */
+      .sqs-html-content[data-sqsp-text-block-content],
+      .sqs-block-content,
+      #block-yui_3_17_2_1_1761751310716_41249 {
+        font-size: 16px !important;
+        color: #333 !important;
+      }
+
+      .sqs-html-content[data-sqsp-text-block-content] .course-card {
+        font-size: 16px !important;
+        color: #333 !important;
+      }
+
+      /* Ensure text content is not replaced */
+      .course-card h3::before,
+      .course-card h3::after,
+      .course-card p::before,
+      .course-card p::after {
+        content: none !important;
+        display: none !important;
+      }
+
+      /* Ensure text is actually rendered with explicit colors */
+      .course-card h3.course-code {
+        -webkit-text-fill-color: #0033A1 !important;
+        text-fill-color: #0033A1 !important;
+        color: #0033A1 !important;
+        text-indent: 0 !important;
+        font-size: 1.1em !important;
+      }
+
+      .course-card p.course-title {
+        -webkit-text-fill-color: #444 !important;
+        text-fill-color: #444 !important;
+        color: #444 !important;
+        text-indent: 0 !important;
+        font-size: 0.95em !important;
+      }
+
+      /* Ensure elements have minimum dimensions */
+      .course-card h3,
+      .course-card h3.course-code {
+        min-height: 1.2em !important;
+        height: auto !important;
+        padding: 0 !important;
+        margin: 0 0 0.5rem 0 !important;
+      }
+
+      .course-card p,
+      .course-card p.course-title {
+        min-height: 1em !important;
+        height: auto !important;
+        padding: 0 !important;
+        margin: 0 0 1rem 0 !important;
+      }
+
+      /* Ultimate fallback - ensure ANY text inside course cards is visible */
+      .course-card h3:not(:empty),
+      .course-card p:not(:empty) {
+        display: block !important;
+        color: inherit !important;
       }
 
       .sqs-html-content .course-card form,
@@ -580,8 +727,8 @@
                                                                                                                                                                                                         <div class="courses-container">
                                                                                                                                                                                                           {% for course in courses %}
                                                                                                                                                                                                             <div class="course-card">
-                                                                                                                                                                                                              <h3 class="course-code">{{ course.courseCode }}</h3>
-                                                                                                                                                                                                              <p class="course-title">{{ course.courseTitle }}</p>
+                                                                                                                                                                                                              <h3 class="course-code" style="display: block !important; visibility: visible !important; opacity: 1 !important; color: #0033A1 !important; font-size: 1.1em !important; font-weight: bold !important; margin: 0 0 0.5rem 0 !important; padding: 0 !important; text-align: center !important; white-space: normal !important; line-height: 1.4 !important;">{{ course.courseCode }}</h3>
+                                                                                                                                                                                                              <p class="course-title" style="display: block !important; visibility: visible !important; opacity: 1 !important; color: #444 !important; font-size: 0.95em !important; margin: 0 0 1rem 0 !important; padding: 0 !important; text-align: center !important; white-space: normal !important; line-height: 1.4 !important;">{{ course.courseTitle }}</p>
                                                                                                                                                                                                               <form action="{{ url_for('eval_creation') }}" method="POST">
                                                                                                                                                                                                                 <input type="hidden" name="courseCode" value="{{ course.courseCode }}">
                                                                                                                                                                                                                 <button type="submit" class="view-course-btn">View Course</button>
