@@ -302,7 +302,7 @@ def eval_creation_submit():
 
     # Update the EvalDueDate for the matching course
     update_query = """
-        UPDATE courses
+        UPDATE course
         SET EvalDueDate = %s
         WHERE CourseCode = %s
     """
