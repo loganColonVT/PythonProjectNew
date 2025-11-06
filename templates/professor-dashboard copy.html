@@ -388,7 +388,7 @@
   <div class="sqs-block website-component-block sqs-block-website-component sqs-block-button button-block" data-block-type="1337" data-definition-name="website.components.button" data-sqsp-block="button" id="block-course-{{ loop.index }}-button">
     <div class="sqs-block-content">
       <div class="sqs-block-button-container sqs-block-button-container--center sqs-stretched" data-animation-role="button" data-alignment="center" data-button-size="medium" data-button-type="primary">
-        <form action="{{ url_for('view_course') }}" method="POST" style="display: inline;">
+        <form action="{{ url_for('eval-creation') }}" method="POST" style="display: inline;">
           <input type="hidden" name="courseCode" value="{{ course.courseCode }}">
           <button type="submit" class="sqs-block-button-element--medium sqs-button-element--primary sqs-block-button-element" data-sqsp-button>
     View Course
