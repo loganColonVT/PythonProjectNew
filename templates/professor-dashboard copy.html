@@ -26,69 +26,84 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/static.css') }}">
     <style>
       .active-courses-header {
-        font-size: 1.5em;
-        color: #0033A1;
-        margin-bottom: 1rem;
-        text-align: left;
+        color: #0033A1 !important;
+        font-size: 1.5em !important;
+        margin-bottom: 1rem !important;
+        text-align: left !important;
+        display: block !important;
+        width: 100% !important;
       }
 
       .courses-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1.5rem;
-        justify-items: center;
-        margin-bottom: 2rem;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+        gap: 20px !important;
+        margin-bottom: 2rem !important;
+        justify-items: center !important;
+        width: 100% !important;
+        max-width: 1000px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
       }
 
       .course-card {
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 20px;
-        text-align: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 250px;
+        background-color: #f9f9f9 !important;
+        border: 1px solid #ccc !important;
+        border-radius: 8px !important;
+        padding: 20px !important;
+        text-align: center !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+        transition: transform 0.2s ease !important;
+        width: 100% !important;
+        max-width: 230px !important;
+        display: block !important;
       }
 
-      .course-card h3 {
-        margin: 0 0 10px 0;
-        font-size: 1.2em;
-        color: #333;
+      .course-card:hover {
+        transform: translateY(-5px) !important;
       }
 
-      .course-card p {
-        margin: 0 0 15px 0;
-        color: #666;
-        font-size: 0.95em;
+      .course-code {
+        font-size: 1.1em !important;
+        font-weight: bold !important;
+        color: #0033A1 !important;
+        margin-bottom: 0.5rem !important;
+        display: block !important;
+        visibility: visible !important;
+      }
+
+      .course-title {
+        color: #444 !important;
+        font-size: 0.95em !important;
+        margin-bottom: 1rem !important;
+        display: block !important;
+        visibility: visible !important;
       }
 
       .view-course-btn {
-        background-color: #8B6A39;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 10px 15px;
-        cursor: pointer;
-        font-size: 1em;
-        transition: background-color 0.3s ease;
+        background-color: #8B6A39 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 4px !important;
+        padding: 10px 15px !important;
+        cursor: pointer !important;
+        font-weight: bold !important;
+        display: inline-block !important;
+        width: auto !important;
       }
 
       .view-course-btn:hover {
-        background-color: #70532c;
+        background-color: #70532c !important;
       }
 
       @media (max-width: 768px) {
         .courses-container {
-          grid-template-columns: 1fr;
-          gap: 1rem;
+          grid-template-columns: 1fr !important;
+          gap: 1rem !important;
         }
 
         .course-card {
-          max-width: 100%;
+          max-width: 100% !important;
         }
       }
     </style>
@@ -442,8 +457,8 @@
                                                                                                                                                                                                         <div class="courses-container">
                                                                                                                                                                                                           {% for course in courses %}
                                                                                                                                                                                                             <div class="course-card">
-                                                                                                                                                                                                              <h3>{{ course.courseCode }}</h3>
-                                                                                                                                                                                                              <p>{{ course.courseTitle }}</p>
+                                                                                                                                                                                                              <h3 class="course-code">{{ course.courseCode }}</h3>
+                                                                                                                                                                                                              <p class="course-title">{{ course.courseTitle }}</p>
                                                                                                                                                                                                               <form action="{{ url_for('eval_creation') }}" method="POST">
                                                                                                                                                                                                                 <input type="hidden" name="courseCode" value="{{ course.courseCode }}">
                                                                                                                                                                                                                 <button type="submit" class="view-course-btn">View Course</button>
