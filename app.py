@@ -313,7 +313,7 @@ def eval_creation_submit():
     cursor.close()
     conn.close()
 
-    return 'Change succesful'
+    return render_template('confirmation-screens.html')
 
 @app.route('/professorDashboard')
 def professor_dashboard():
