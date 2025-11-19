@@ -300,7 +300,6 @@ def eval_creation_submit():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Update the EvalDueDate for the matching course
     update_query = """
         UPDATE course
         SET EvalDueDate = %s
@@ -308,7 +307,6 @@ def eval_creation_submit():
     """
     cursor.execute(update_query, (dueDate, courseCode))
 
-    # Commit and close
     conn.commit()
     cursor.close()
     conn.close()
@@ -327,7 +325,6 @@ def professor_dashboard():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    #Only show courses belonging to this professor
     cursor.execute("""
         SELECT CourseCode, CourseTime
         FROM course
@@ -336,13 +333,24 @@ def professor_dashboard():
 
     rows = cursor.fetchall()
 
-    # Convert tuples to dictionaries
     courses = [{'courseCode': row[0], 'courseTime': row[1]} for row in rows]
 
     cursor.close()
     conn.close()
 
     return render_template('professor-dashboard.html', courses=courses)
+
+@app.route('/importCourseRoster')
+def importRoster():
+    return render_template('import-course-roster.html')
+
+@app.route('/groupsInClass')
+def seeGroups():
+    return render_template('groups-in-your-class.html')
+
+@app.route('/createGroups')
+def createGroups():
+    return render_template('creating-groups.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
