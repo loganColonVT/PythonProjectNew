@@ -328,14 +328,14 @@ def professor_dashboard():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT CourseCode, CourseTime
+        SELECT CourseID, CourseCode, CourseTime
         FROM course
         WHERE ProfessorID = %s
     """, (professor_id,))
 
     rows = cursor.fetchall()
 
-    courses = [{'courseCode': row[0], 'courseTime': row[1]} for row in rows]
+    courses = [{'courseID': row[0], 'courseCode': row[1], 'courseTime': row[2]} for row in rows]
 
     cursor.close()
     conn.close()
@@ -420,9 +420,67 @@ def importSubmit():
         flash(f'Error processing file: {str(e)}', 'error')
         return redirect(url_for('importRoster'))
 
-@app.route('/groupsInClass')
+@app.route('/groupsInClass', methods=['GET', 'POST'])
 def seeGroups():
-    return render_template('groups-in-your-class.html')
+    # Get courseID from request (either GET or POST)
+    course_id = request.args.get('courseID') or request.form.get('courseID')
+    
+    if not course_id:
+        flash('No course selected', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Get course information
+    cursor.execute("SELECT CourseCode, CourseTime FROM course WHERE CourseID = %s", (course_id,))
+    course_info = cursor.fetchone()
+    
+    if not course_info:
+        cursor.close()
+        conn.close()
+        flash('Course not found', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    course_code, course_time = course_info
+    
+    # Get all groups for this course
+    cursor.execute("""
+        SELECT GroupID, GroupName
+        FROM studentgroup
+        WHERE CourseID = %s
+        ORDER BY GroupName
+    """, (course_id,))
+    
+    groups_data = cursor.fetchall()
+    
+    # For each group, get the students
+    groups = []
+    for group_id, group_name in groups_data:
+        cursor.execute("""
+            SELECT s.StudentID, s.Name
+            FROM student s
+            INNER JOIN groupmembers gm ON s.StudentID = gm.StudentID
+            WHERE gm.GroupID = %s
+            ORDER BY s.Name
+        """, (group_id,))
+        
+        students = [{'studentID': row[0], 'name': row[1]} for row in cursor.fetchall()]
+        
+        groups.append({
+            'groupID': group_id,
+            'groupName': group_name,
+            'students': students
+        })
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template('groups-in-your-class.html', 
+                         courseID=course_id,
+                         courseCode=course_code,
+                         courseTime=course_time,
+                         groups=groups)
 
 @app.route('/createGroups')
 def createGroups():

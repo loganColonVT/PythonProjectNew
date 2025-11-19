@@ -1369,7 +1369,33 @@
 </style><div class="fluid-engine fe-6917a9080e40f90fb85ffe76"><div class="fe-block fe-block-f8f7da2562aea9018d9f"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="&#123;&quot;topLeft&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;topRight&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;bottomLeft&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;bottomRight&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;&#125;" data-sqsp-block="text" id="block-f8f7da2562aea9018d9f"><div class="sqs-block-content">
 
 <div class="sqs-html-content" data-sqsp-text-block-content>
-  <h3 style="text-align:center;white-space:pre-wrap;">Course <em>BIT 4454</em> Student Groups</h3>
+  <h3 style="text-align:center;white-space:pre-wrap;">Course <em>{{ courseCode or 'N/A' }}</em> Student Groups</h3>
+  {% if groups %}
+    <div style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
+      {% for group in groups %}
+        <div style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h4 style="color: #0033A1; font-size: 1.3em; margin-bottom: 1rem; border-bottom: 2px solid #0033A1; padding-bottom: 0.5rem;">
+            {{ group.groupName }}
+          </h4>
+          {% if group.students %}
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              {% for student in group.students %}
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee; color: #333;">
+                  {{ student.name }}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p style="color: #666; font-style: italic;">No students in this group</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="text-align: center; padding: 2rem; color: #666;">
+      <p>No groups found for this course.</p>
+    </div>
+  {% endif %}
 </div>
 
 
