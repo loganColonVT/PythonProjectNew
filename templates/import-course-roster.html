@@ -1766,7 +1766,7 @@
     }
   </style>
   
-  <form class="roster-import-form" id="rosterImportForm" onsubmit="handleRosterSubmit(event)">
+  <form class="roster-import-form" id="rosterImportForm" method="POST" action="{{ url_for('importSubmit') }}" enctype="multipart/form-data" onsubmit="handleRosterSubmit(event)">
     <div class="file-input-wrapper">
       <label for="rosterFile">Upload Student Roster (CSV)</label>
       <input 
@@ -1794,28 +1794,20 @@
     }
     
     function handleRosterSubmit(event) {
-      event.preventDefault();
       const fileInput = document.getElementById('rosterFile');
       const submitBtn = document.getElementById('submitBtn');
       
       if (!fileInput.files || !fileInput.files[0]) {
+        event.preventDefault();
         alert('Please select a CSV file to upload.');
         return;
       }
       
-      const file = fileInput.files[0];
-      
-      // Disable submit button
+      // Disable submit button and show processing state
       submitBtn.disabled = true;
       submitBtn.textContent = 'Processing...';
       
-      // TODO: Add backend integration here
-      // For now, just show a message
-      setTimeout(() => {
-        alert('File selected: ' + file.name + '\n\nBackend integration coming soon!');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit';
-      }, 500);
+      // Form will submit normally to the backend
     }
   </script>
 </div></div></div></div></div></div>

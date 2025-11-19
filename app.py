@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import os
 import mysql.connector
+import csv
+import io
 
 app = Flask(__name__)
 app.secret_key = 'fdshj3838aslenddk232bnhdfs'  # Required for flash messages
@@ -343,6 +345,80 @@ def professor_dashboard():
 @app.route('/importCourseRoster')
 def importRoster():
     return render_template('import-course-roster.html')
+
+@app.route('/importCourseSubmit', methods=['POST'])
+def importSubmit():
+    try:
+        # Get the uploaded file
+        if 'rosterFile' not in request.files:
+            flash('No file uploaded', 'error')
+            return redirect(url_for('importRoster'))
+        
+        file = request.files['rosterFile']
+        
+        if file.filename == '':
+            flash('No file selected', 'error')
+            return redirect(url_for('importRoster'))
+        
+        # Read the CSV file
+        stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+        csv_reader = csv.reader(stream)
+        
+        # Skip header row if present (optional - you can remove this if CSV has no header)
+        # next(csv_reader, None)
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        students_added = 0
+        errors = []
+        
+        # Process each row in the CSV
+        for row_num, row in enumerate(csv_reader, start=1):
+            # Skip empty rows
+            if not row or len(row) < 3:
+                continue
+            
+            try:
+                # Extract data from CSV columns
+                student_id = row[0].strip()
+                name = row[1].strip()
+                email = row[2].strip()
+                # Column 4 (password) is ignored - we'll generate it
+                
+                # Extract first name from Name column
+                first_name = name.split()[0] if name else ''
+                password = first_name + '123'
+                
+                # Insert student into database
+                sql = 'INSERT INTO student (StudentID, Name, Email, Password) VALUES (%s, %s, %s, %s)'
+                values = (student_id, name, email, password)
+                
+                cursor.execute(sql, values)
+                students_added += 1
+                
+            except mysql.connector.IntegrityError as e:
+                # Handle duplicate entries or other integrity errors
+                errors.append(f"Row {row_num}: Student ID {student_id} may already exist or invalid data")
+            except Exception as e:
+                errors.append(f"Row {row_num}: Error processing student - {str(e)}")
+        
+        # Commit all successful inserts
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        # Show success message
+        if students_added > 0:
+            flash(f'Successfully imported {students_added} student(s)', 'success')
+        if errors:
+            flash(f'Some errors occurred: {"; ".join(errors[:5])}', 'warning')
+        
+        return render_template('creating-groups.html')
+        
+    except Exception as e:
+        flash(f'Error processing file: {str(e)}', 'error')
+        return redirect(url_for('importRoster'))
 
 @app.route('/groupsInClass')
 def seeGroups():
