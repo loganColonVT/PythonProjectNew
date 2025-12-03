@@ -18,6 +18,13 @@ def get_db_connection():
     )
     return connection
 
+# Context processor to make authentication state available to all templates
+@app.context_processor
+def inject_user_data():
+    is_authenticated = 'professor_id' in session or 'student_id' in session
+    user_role = session.get('role')
+    return dict(is_authenticated=is_authenticated, user_role=user_role)
+
 # Home route
 @app.route('/')
 def home():
@@ -63,35 +70,43 @@ def login():
 
 @app.route('/loginSubmit', methods=['POST'])
 def loginSubmit():
-
     conn = get_db_connection()
     cursor = conn.cursor()
-
     email = request.form.get("email")
     password = request.form.get("password")
 
-    # Check credentials
+    # Check professor credentials
     cursor.execute("SELECT ProfessorID, Password FROM professor WHERE Email = %s", (email,))
-    result = cursor.fetchone()
+    professor_result = cursor.fetchone()
 
-    error = False
-    if result is None:
-        error = True
-    else:
-        professor_id, db_password = result
-        if password != db_password:
-            error = True
+    if professor_result:
+        professor_id, db_password = professor_result
+        if password == db_password:
+            session['professor_id'] = professor_id
+            session['role'] = 'professor'
+            flash("Logged in as Professor!", "success")
+            cursor.close()
+            conn.close()
+            return redirect(url_for('professor_dashboard'))
+
+    # Check student credentials
+    cursor.execute("SELECT StudentID, Password FROM student WHERE Email = %s", (email,))
+    student_result = cursor.fetchone()
+
+    if student_result:
+        student_id, db_password = student_result
+        if password == db_password:
+            session['student_id'] = student_id
+            session['role'] = 'student'
+            flash("Logged in as Student!", "success")
+            cursor.close()
+            conn.close()
+            return redirect(url_for('student_dashboard'))
 
     cursor.close()
     conn.close()
-
-    if error:
-        flash("Invalid email or password", "error")
-        return redirect(url_for('login'))
-    else:
-        #Store the professor's ID in the session
-        session['professor_id'] = professor_id
-        return redirect(url_for('professor_dashboard'))
+    flash("Invalid email or password", "error")
+    return redirect(url_for('login'))
     
 
 @app.route('/get-started', methods=['POST'])
@@ -554,6 +569,94 @@ def createGroups():
                          courseCode=course_code, 
                          students=students,
                          existingGroups=existing_groups)
+
+@app.route('/createGroupsSubmit', methods=['POST'])
+def createGroupsSubmit():
+    professor_id = session.get('professor_id')
+    if not professor_id:
+        flash('You must log in first.', 'error')
+        return redirect(url_for('login'))
+    
+    course_id = request.form.get('courseID')
+    if not course_id:
+        flash('No course selected', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Verify course belongs to professor
+    cursor.execute("SELECT CourseID FROM course WHERE CourseID = %s AND ProfessorID = %s", 
+                  (course_id, professor_id))
+    if not cursor.fetchone():
+        cursor.close()
+        conn.close()
+        flash('Course not found or you do not have access to it.', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    # Delete existing groups and group members for this course (for editing)
+    cursor.execute("""
+        DELETE gm FROM groupmembers gm
+        INNER JOIN studentgroup sg ON gm.GroupID = sg.GroupID
+        WHERE sg.CourseID = %s
+    """, (course_id,))
+    
+    cursor.execute("DELETE FROM studentgroup WHERE CourseID = %s", (course_id,))
+    
+    groups_created = 0
+    errors = []
+    
+    try:
+        # Process each of the 4 groups
+        for group_num in range(1, 5):
+            group_name = request.form.get(f'groupName{group_num}', '').strip()
+            student_ids = request.form.getlist(f'group{group_num}Students')
+            
+            # Skip if no group name provided
+            if not group_name:
+                continue
+            
+            # Create the group
+            try:
+                cursor.execute("""
+                    INSERT INTO studentgroup (CourseID, GroupName) 
+                    VALUES (%s, %s)
+                """, (course_id, group_name))
+                group_id = cursor.lastrowid
+                
+                # Add students to the group
+                for student_id in student_ids:
+                    if student_id:
+                        try:
+                            cursor.execute("""
+                                INSERT INTO groupmembers (GroupID, StudentID) 
+                                VALUES (%s, %s)
+                            """, (group_id, student_id))
+                        except mysql.connector.IntegrityError:
+                            # Student already in group, skip
+                            pass
+                
+                groups_created += 1
+            except Exception as e:
+                errors.append(f"Error creating group {group_num}: {str(e)}")
+        
+        conn.commit()
+        
+        if groups_created > 0:
+            flash(f'Successfully created {groups_created} group(s)', 'success')
+        if errors:
+            flash(f'Some errors occurred: {"; ".join(errors[:5])}', 'warning')
+        
+        # Redirect to view groups for this course
+        return redirect(url_for('seeGroups', courseID=course_id))
+        
+    except Exception as e:
+        conn.rollback()
+        flash(f'Error creating groups: {str(e)}', 'error')
+        return redirect(url_for('createGroups', courseID=course_id))
+    finally:
+        cursor.close()
+        conn.close()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
