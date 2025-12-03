@@ -407,6 +407,17 @@ def importRoster():
 @app.route('/importCourseSubmit', methods=['POST'])
 def importSubmit():
     try:
+        professor_id = session.get('professor_id')
+        if not professor_id:
+            flash('You must log in first.', 'error')
+            return redirect(url_for('login'))
+        
+        # Get course code from form
+        course_code = request.form.get('courseCode', '').strip()
+        if not course_code:
+            flash('Course code is required', 'error')
+            return redirect(url_for('importRoster'))
+        
         # Get the uploaded file
         if 'rosterFile' not in request.files:
             flash('No file uploaded', 'error')
@@ -418,18 +429,35 @@ def importSubmit():
             flash('No file selected', 'error')
             return redirect(url_for('importRoster'))
         
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Verify course exists and get CourseID
+        cursor.execute("SELECT CourseID FROM course WHERE CourseCode = %s AND ProfessorID = %s", 
+                      (course_code, professor_id))
+        course_result = cursor.fetchone()
+        
+        if not course_result:
+            cursor.close()
+            conn.close()
+            flash(f'Course code "{course_code}" not found or you do not have access to it.', 'error')
+            return redirect(url_for('importRoster'))
+        
+        course_id = course_result[0]
+        
+        # Get current date and time for enrollment
+        from datetime import datetime
+        enrollment_date = datetime.now().date()
+        enrollment_time = datetime.now().time()
+        
         # Read the CSV file
         stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
         csv_reader = csv.reader(stream)
         
-        # Skip header row if present (optional - you can remove this if CSV has no header)
-        # next(csv_reader, None)
-        
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
         students_added = 0
+        enrollments_added = 0
         errors = []
+        student_ids = []  # Track student IDs for enrollment
         
         # Process each row in the CSV
         for row_num, row in enumerate(csv_reader, start=1):
@@ -442,24 +470,41 @@ def importSubmit():
                 student_id = row[0].strip()
                 name = row[1].strip()
                 email = row[2].strip()
-                # Column 4 (password) is ignored - we'll generate it
                 
                 # Extract first name from Name column
                 first_name = name.split()[0] if name else ''
                 password = first_name + '123'
                 
-                # Insert student into database
-                sql = 'INSERT INTO student (StudentID, Name, Email, Password) VALUES (%s, %s, %s, %s)'
-                values = (student_id, name, email, password)
+                # Insert student into database (or skip if exists)
+                try:
+                    sql = 'INSERT INTO student (StudentID, Name, Email, Password) VALUES (%s, %s, %s, %s)'
+                    values = (student_id, name, email, password)
+                    cursor.execute(sql, values)
+                    students_added += 1
+                except mysql.connector.IntegrityError:
+                    # Student already exists, that's okay
+                    pass
                 
-                cursor.execute(sql, values)
-                students_added += 1
+                student_ids.append(student_id)
                 
-            except mysql.connector.IntegrityError as e:
-                # Handle duplicate entries or other integrity errors
-                errors.append(f"Row {row_num}: Student ID {student_id} may already exist or invalid data")
             except Exception as e:
                 errors.append(f"Row {row_num}: Error processing student - {str(e)}")
+        
+        # Create enrollments for all imported students
+        for student_id in student_ids:
+            try:
+                # Check if enrollment already exists
+                cursor.execute("SELECT EnrollmentID FROM enrollment WHERE CourseID = %s AND StudentID = %s", 
+                             (course_id, student_id))
+                if not cursor.fetchone():
+                    # Insert enrollment
+                    cursor.execute("""
+                        INSERT INTO enrollment (CourseID, StudentID, EnrollmentDate, EnrollmentTime) 
+                        VALUES (%s, %s, %s, %s)
+                    """, (course_id, student_id, enrollment_date, enrollment_time))
+                    enrollments_added += 1
+            except Exception as e:
+                errors.append(f"Error creating enrollment for student {student_id}: {str(e)}")
         
         # Commit all successful inserts
         conn.commit()
@@ -468,11 +513,12 @@ def importSubmit():
         
         # Show success message
         if students_added > 0:
-            flash(f'Successfully imported {students_added} student(s)', 'success')
+            flash(f'Successfully imported {students_added} student(s) and created {enrollments_added} enrollment(s)', 'success')
         if errors:
             flash(f'Some errors occurred: {"; ".join(errors[:5])}', 'warning')
         
-        return render_template('creating-groups.html')
+        # Redirect to creating groups page with courseID
+        return redirect(url_for('createGroups', courseID=course_id))
         
     except Exception as e:
         flash(f'Error processing file: {str(e)}', 'error')
@@ -542,7 +588,167 @@ def seeGroups():
 
 @app.route('/createGroups')
 def createGroups():
-    return render_template('creating-groups.html')
+    professor_id = session.get('professor_id')
+    if not professor_id:
+        flash('You must log in first.', 'error')
+        return redirect(url_for('login'))
+    
+    # Get courseID from query parameters
+    course_id = request.args.get('courseID')
+    if not course_id:
+        flash('No course selected', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Verify course belongs to professor
+    cursor.execute("SELECT CourseCode FROM course WHERE CourseID = %s AND ProfessorID = %s", 
+                  (course_id, professor_id))
+    course_result = cursor.fetchone()
+    
+    if not course_result:
+        cursor.close()
+        conn.close()
+        flash('Course not found or you do not have access to it.', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    course_code = course_result[0]
+    
+    # Get all students enrolled in this course
+    cursor.execute("""
+        SELECT DISTINCT s.StudentID, s.Name
+        FROM student s
+        INNER JOIN enrollment e ON s.StudentID = e.StudentID
+        WHERE e.CourseID = %s
+        ORDER BY s.Name
+    """, (course_id,))
+    
+    students = [{'studentID': row[0], 'name': row[1]} for row in cursor.fetchall()]
+    
+    # Get existing groups for this course (for editing)
+    cursor.execute("""
+        SELECT GroupID, GroupName
+        FROM studentgroup
+        WHERE CourseID = %s
+        ORDER BY GroupID
+        LIMIT 4
+    """, (course_id,))
+    
+    existing_groups = []
+    for group_row in cursor.fetchall():
+        group_id, group_name = group_row
+        
+        # Get students in this group
+        cursor.execute("""
+            SELECT StudentID
+            FROM groupmembers
+            WHERE GroupID = %s
+        """, (group_id,))
+        
+        student_ids_in_group = [row[0] for row in cursor.fetchall()]
+        existing_groups.append({
+            'groupID': group_id,
+            'groupName': group_name,
+            'studentIDs': student_ids_in_group
+        })
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template('creating-groups.html', 
+                         courseID=course_id, 
+                         courseCode=course_code, 
+                         students=students,
+                         existingGroups=existing_groups)
+
+@app.route('/createGroupsSubmit', methods=['POST'])
+def createGroupsSubmit():
+    professor_id = session.get('professor_id')
+    if not professor_id:
+        flash('You must log in first.', 'error')
+        return redirect(url_for('login'))
+    
+    course_id = request.form.get('courseID')
+    if not course_id:
+        flash('No course selected', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Verify course belongs to professor
+    cursor.execute("SELECT CourseID FROM course WHERE CourseID = %s AND ProfessorID = %s", 
+                  (course_id, professor_id))
+    if not cursor.fetchone():
+        cursor.close()
+        conn.close()
+        flash('Course not found or you do not have access to it.', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    # Delete existing groups and group members for this course (for editing)
+    cursor.execute("""
+        DELETE gm FROM groupmembers gm
+        INNER JOIN studentgroup sg ON gm.GroupID = sg.GroupID
+        WHERE sg.CourseID = %s
+    """, (course_id,))
+    
+    cursor.execute("DELETE FROM studentgroup WHERE CourseID = %s", (course_id,))
+    
+    groups_created = 0
+    errors = []
+    
+    try:
+        # Process each of the 4 groups
+        for group_num in range(1, 5):
+            group_name = request.form.get(f'groupName{group_num}', '').strip()
+            student_ids = request.form.getlist(f'group{group_num}Students')
+            
+            # Skip if no group name provided
+            if not group_name:
+                continue
+            
+            # Create the group
+            try:
+                cursor.execute("""
+                    INSERT INTO studentgroup (CourseID, GroupName) 
+                    VALUES (%s, %s)
+                """, (course_id, group_name))
+                group_id = cursor.lastrowid
+                
+                # Add students to the group
+                for student_id in student_ids:
+                    if student_id:
+                        try:
+                            cursor.execute("""
+                                INSERT INTO groupmembers (GroupID, StudentID) 
+                                VALUES (%s, %s)
+                            """, (group_id, student_id))
+                        except mysql.connector.IntegrityError:
+                            # Student already in group, skip
+                            pass
+                
+                groups_created += 1
+            except Exception as e:
+                errors.append(f"Error creating group {group_num}: {str(e)}")
+        
+        conn.commit()
+        
+        if groups_created > 0:
+            flash(f'Successfully created {groups_created} group(s)', 'success')
+        if errors:
+            flash(f'Some errors occurred: {"; ".join(errors[:5])}', 'warning')
+        
+        # Redirect to view groups for this course
+        return redirect(url_for('seeGroups', courseID=course_id))
+        
+    except Exception as e:
+        conn.rollback()
+        flash(f'Error creating groups: {str(e)}', 'error')
+        return redirect(url_for('createGroups', courseID=course_id))
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.route('/logout')
 def logout():

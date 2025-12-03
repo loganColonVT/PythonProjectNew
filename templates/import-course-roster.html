@@ -1757,6 +1757,17 @@
   </style>
   
   <form class="roster-import-form" id="rosterImportForm" method="POST" action="{{ url_for('importSubmit') }}" enctype="multipart/form-data" onsubmit="handleRosterSubmit(event)">
+    <div class="form-field" style="margin-bottom: 1.5rem;">
+      <label for="courseCode" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Course Code</label>
+      <input 
+        type="text" 
+        id="courseCode" 
+        name="courseCode" 
+        required
+        placeholder="e.g., IS101"
+        style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"
+      />
+    </div>
     <div class="file-input-wrapper">
       <label for="rosterFile">Upload Student Roster (CSV)</label>
       <input 
