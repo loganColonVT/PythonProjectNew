@@ -658,5 +658,21 @@ def createGroupsSubmit():
         cursor.close()
         conn.close()
 
+@app.route('/logout')
+def logout():
+    # Explicitly clear all session keys
+    session.pop('professor_id', None)
+    session.pop('student_id', None)
+    session.pop('role', None)
+    session.clear()  # Clear any remaining session data
+    session.modified = True  # Ensure Flask knows the session was modified
+    flash("You have been logged out successfully.", "success")
+    # Use redirect with no_cache to prevent caching
+    response = redirect(url_for('home'))
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
