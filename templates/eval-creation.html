@@ -819,131 +819,46 @@
                 <div class="header-nav">
                   <div class="header-nav-wrapper">
                     <nav class="header-nav-list">
-                      
-
-
-  
-    <div class="header-nav-item header-nav-item--collection header-nav-item--homepage">
+    <div class="header-nav-item header-nav-item--collection header-nav-item--homepage {% if request.path == '/' %}header-nav-item--active{% endif %}">
       <a
         href="/"
         data-animation-role="header-element"
+        {% if request.path == '/' %}aria-current="page"{% endif %}
         
       >
         Home
       </a>
     </div>
-  
-  
-  
+{% if not is_authenticated %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/get-started' %}header-nav-item--active{% endif %}">
+      <a href="/get-started" data-animation-role="header-element" {% if request.path == '/get-started' %}aria-current="page"{% endif %}>Get Started</a>
+    </div>
+{% endif %}
 
+{% if is_authenticated and user_role == 'student' %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/student-dashboard' %}header-nav-item--active{% endif %}">
+      <a href="/student-dashboard" data-animation-role="header-element" {% if request.path == '/student-dashboard' %}aria-current="page"{% endif %}>Student Dashboard</a>
+    </div>
+{% endif %}
 
-  
-    <div class="header-nav-item header-nav-item--collection">
+{% if is_authenticated and user_role == 'professor' %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/professorDashboard' %}header-nav-item--active{% endif %}">
+      <a href="/professorDashboard" data-animation-role="header-element" {% if request.path == '/professorDashboard' %}aria-current="page"{% endif %}>Professor Dashboard</a>
+    </div>
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/importCourseRoster' %}header-nav-item--active{% endif %}">
+      <a href="/importCourseRoster" data-animation-role="header-element" {% if request.path == '/importCourseRoster' %}aria-current="page"{% endif %}>Import Course Roster</a>
+    </div>
+{% endif %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/contact' %}header-nav-item--active{% endif %}">
       <a
-        href="/student-dashboard-1"
+        href="/contact"
         data-animation-role="header-element"
+        {% if request.path == '/contact' %}aria-current="page"{% endif %}
         
       >
-        Professor Dashboard
+        Contact
       </a>
     </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection header-nav-item--active">
-      <a
-        href="/confirmation-screens-1"
-        data-animation-role="header-element"
-        
-          aria-current="page"
-        
-      >
-        Eval/Reminder Creation Page
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/confirmation-screens-2"
-        data-animation-role="header-element"
-        
-      >
-        Roster Completion Chart
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/get-started"
-        data-animation-role="header-element"
-        
-      >
-        Get Started
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/student-dashboard"
-        data-animation-role="header-element"
-        
-      >
-        Student Dashboard
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/peer-evaluation"
-        data-animation-role="header-element"
-        
-      >
-        Peer Evaluation
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/confirmation-screens"
-        data-animation-role="header-element"
-        
-      >
-        Confirmation Screens
-      </a>
-    </div>
-  
-  
-  
-
-
 
                     </nav>
                   </div>
@@ -2032,7 +1947,10 @@ button:hover {
           <p class="caption-text">in Eastern Time</p>
         </div>
 
-        <button type="submit">Schedule Evaluation</button>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="submit" style="flex: 1;">Schedule Evaluation</button>
+          <a href="{{ url_for('professor_dashboard') }}" style="flex: 1; display: inline-block; text-align: center; background-color: #6c757d; color: #fff; text-decoration: none; padding: 10px; border-radius: 4px; cursor: pointer;">Cancel</a>
+        </div>
       </form>
     </div>
   </div>

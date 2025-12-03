@@ -540,56 +540,46 @@
                 <div class="header-nav">
                   <div class="header-nav-wrapper">
                     <nav class="header-nav-list">
-                      
-
-
-  
-    <div class="header-nav-item header-nav-item--collection header-nav-item--active">
+    <div class="header-nav-item header-nav-item--collection header-nav-item--homepage {% if request.path == '/' %}header-nav-item--active{% endif %}">
       <a
-        href="/groups-in-your-class"
+        href="/"
         data-animation-role="header-element"
-        
-          aria-current="page"
+        {% if request.path == '/' %}aria-current="page"{% endif %}
         
       >
-        Groups In Your Class
+        Home
       </a>
     </div>
-  
-  
-  
+{% if not is_authenticated %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/get-started' %}header-nav-item--active{% endif %}">
+      <a href="/get-started" data-animation-role="header-element" {% if request.path == '/get-started' %}aria-current="page"{% endif %}>Get Started</a>
+    </div>
+{% endif %}
 
+{% if is_authenticated and user_role == 'student' %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/student-dashboard' %}header-nav-item--active{% endif %}">
+      <a href="/student-dashboard" data-animation-role="header-element" {% if request.path == '/student-dashboard' %}aria-current="page"{% endif %}>Student Dashboard</a>
+    </div>
+{% endif %}
 
-  
-    <div class="header-nav-item header-nav-item--collection">
+{% if is_authenticated and user_role == 'professor' %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/professorDashboard' %}header-nav-item--active{% endif %}">
+      <a href="/professorDashboard" data-animation-role="header-element" {% if request.path == '/professorDashboard' %}aria-current="page"{% endif %}>Professor Dashboard</a>
+    </div>
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/importCourseRoster' %}header-nav-item--active{% endif %}">
+      <a href="/importCourseRoster" data-animation-role="header-element" {% if request.path == '/importCourseRoster' %}aria-current="page"{% endif %}>Import Course Roster</a>
+    </div>
+{% endif %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/contact' %}header-nav-item--active{% endif %}">
       <a
-        href="/creating-groups"
+        href="/contact"
         data-animation-role="header-element"
+        {% if request.path == '/contact' %}aria-current="page"{% endif %}
         
       >
-        Creating Groups
+        Contact
       </a>
     </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/import-course-roster"
-        data-animation-role="header-element"
-        
-      >
-        Import Course Roster
-      </a>
-    </div>
-  
-  
-  
-
-
 
                     </nav>
                   </div>
@@ -722,13 +712,13 @@
   
     <div class="header-nav-item header-nav-item--collection header-nav-item--active">
       <a
-        href="/groups-in-your-class"
+        href="/"
         data-animation-role="header-element"
         
           aria-current="page"
         
       >
-        Groups In Your Class
+        Home
       </a>
     </div>
   
@@ -739,11 +729,11 @@
   
     <div class="header-nav-item header-nav-item--collection">
       <a
-        href="/creating-groups"
+        href="/professorDashboard"
         data-animation-role="header-element"
         
       >
-        Creating Groups
+        Professor Dashboard
       </a>
     </div>
   
@@ -754,7 +744,7 @@
   
     <div class="header-nav-item header-nav-item--collection">
       <a
-        href="/import-course-roster"
+        href="/importCourseRoster"
         data-animation-role="header-element"
         
       >
@@ -762,7 +752,22 @@
       </a>
     </div>
   
+
   
+
+  
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/contact' %}header-nav-item--active{% endif %}">
+      <a
+        href="/contact"
+        data-animation-role="header-element"
+        {% if request.path == '/contact' %}aria-current="page"{% endif %}
+        
+      >
+        Contact
+      </a>
+    </div>
+  
+
   
 
 
@@ -1061,13 +1066,13 @@
           
             <div class="container header-menu-nav-item header-menu-nav-item--collection header-menu-nav-item--active">
               <a
-                href="/groups-in-your-class"
+                href="/"
                 
                   aria-current="page"
                 
               >
                 <div class="header-menu-nav-item-content">
-                  Groups In Your Class
+                  Home
                 </div>
               </a>
             </div>
@@ -1080,11 +1085,11 @@
           
             <div class="container header-menu-nav-item header-menu-nav-item--collection">
               <a
-                href="/creating-groups"
+                href="/professorDashboard"
                 
               >
                 <div class="header-menu-nav-item-content">
-                  Creating Groups
+                  Professor Dashboard
                 </div>
               </a>
             </div>
@@ -1097,11 +1102,28 @@
           
             <div class="container header-menu-nav-item header-menu-nav-item--collection">
               <a
-                href="/import-course-roster"
+                href="/importCourseRoster"
                 
               >
                 <div class="header-menu-nav-item-content">
                   Import Course Roster
+                </div>
+              </a>
+            </div>
+          
+        
+      
+    
+      
+        
+          
+            <div class="container header-menu-nav-item header-menu-nav-item--collection">
+              <a
+                href="/contact"
+                
+              >
+                <div class="header-menu-nav-item-content">
+                  Contact
                 </div>
               </a>
             </div>
@@ -1979,147 +2001,7 @@
 
 
 
-<div class="fe-block fe-block-yui_3_17_2_1_1763158248075_7083"><div class="sqs-block website-component-block sqs-block-website-component sqs-block-button button-block" data-block-css="[&quot;https://definitions.sqspcdn.com/website-component-definition/static-assets/website.components.button/6a29ad86-2826-45b0-ba7e-3fe1af6cc41c_140/website.components.button.styles.css&quot;]" data-block-scripts="[&quot;https://definitions.sqspcdn.com/website-component-definition/static-assets/website.components.button/6a29ad86-2826-45b0-ba7e-3fe1af6cc41c_140/website.components.button.visitor.js&quot;]" data-block-type="1337" data-definition-name="website.components.button" data-sqsp-block="button" id="block-yui_3_17_2_1_1763158248075_7083"><div class="sqs-block-content">
-
-<div
-  class="sqs-block-button-container sqs-block-button-container--center sqs-stretched"
-  data-animation-role="button"
-  data-alignment="center"
-  data-button-size="medium"
-  data-button-type="primary"
-> 
-  <a 
-    href="{{ url_for('createGroups') }}" 
-    class="sqs-block-button-element--medium sqs-button-element--primary sqs-block-button-element"
-    data-sqsp-button
-    
-  >
-    Edit Groups
-  </a>
-  <style>
-    #block-yui_3_17_2_1_1763158248075_7083 {
-      --sqs-block-content-flex: 1;
-    }
-  </style>
-  
-<div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="&#123;&quot;topLeft&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;topRight&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;bottomLeft&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;bottomRight&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;&#125;" data-sqsp-block="text" id="block-8d30476768e74c6c9b77"><div class="sqs-block-content">
-  <script class="TextAttributes-props" type="application/json">[ {
-              "type": "highlight",
-              "id": "db78c716-8fe2-42c0-8896-8ab5b1e2cd17",
-              "shape": "underline",
-              "isFront": false,
-              "isAnimationEnabled": false,
-              "animation": "draw",
-              "duration": 0.5,
-              "direction": "right",
-              "color": {
-                "type": "THEME_COLOR"
-              },
-              "thickness": {
-                "unit": "em",
-                "value": 0.1
-              },
-              "linecap": "square"
-            } ]</script>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-</div></div></div><div class="fe-block fe-block-yui_3_17_2_1_1763158248075_7563"><div class="sqs-block website-component-block sqs-block-website-component sqs-block-button button-block" data-block-css="[&quot;https://definitions.sqspcdn.com/website-component-definition/static-assets/website.components.button/6a29ad86-2826-45b0-ba7e-3fe1af6cc41c_140/website.components.button.styles.css&quot;]" data-block-scripts="[&quot;https://definitions.sqspcdn.com/website-component-definition/static-assets/website.components.button/6a29ad86-2826-45b0-ba7e-3fe1af6cc41c_140/website.components.button.visitor.js&quot;]" data-block-type="1337" data-definition-name="website.components.button" data-sqsp-block="button" id="block-yui_3_17_2_1_1763158248075_7563"><div class="sqs-block-content">
-
-<div
-  class="sqs-block-button-container sqs-block-button-container--center sqs-stretched"
-  data-animation-role="button"
-  data-alignment="center"
-  data-button-size="medium"
-  data-button-type="primary"
-> 
-  <a 
-    href="{{ url_for('professor_dashboard') }}" 
-    class="sqs-block-button-element--medium sqs-button-element--primary sqs-block-button-element"
-    data-sqsp-button
-    
-  >
-    Back To Professor Dashboard
-  </a>
-  <style>
-    #block-yui_3_17_2_1_1763158248075_7563 {
-      --sqs-block-content-flex: 1;
-    }
-  </style>
-  
-<div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="&#123;&quot;topLeft&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;topRight&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;bottomLeft&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;bottomRight&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;&#125;" data-sqsp-block="text" id="block-7ac7f0159a853706663a"><div class="sqs-block-content">
-  <script class="TextAttributes-props" type="application/json">[ {
-              "type": "highlight",
-              "id": "db78c716-8fe2-42c0-8896-8ab5b1e2cd17",
-              "shape": "underline",
-              "isFront": false,
-              "isAnimationEnabled": false,
-              "animation": "draw",
-              "duration": 0.5,
-              "direction": "right",
-              "color": {
-                "type": "THEME_COLOR"
-              },
-              "thickness": {
-                "unit": "em",
-                "value": 0.1
-              },
-              "linecap": "square"
-            } ]</script>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-</div></div></div></div></div>
+</div></div>
     </div>
   
   </div>
