@@ -393,8 +393,8 @@
     data-current-styles="{
 &quot;layout&quot;: &quot;navLeft&quot;,
 &quot;action&quot;: {
-&quot;href&quot;: &quot;/get-started&quot;,
-&quot;buttonText&quot;: &quot;Logout&quot;,
+&quot;href&quot;: &quot;{% if is_authenticated %}{{ url_for('logout') }}{% else %}{{ url_for('login') }}{% endif %}&quot;,
+&quot;buttonText&quot;: &quot;{% if is_authenticated %}Log Out{% else %}Log In{% endif %}&quot;,
 &quot;newWindow&quot;: false
 },
 &quot;showSocial&quot;: false,
@@ -830,125 +830,32 @@
         Home
       </a>
     </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/get-started"
-        data-animation-role="header-element"
-        
-      >
-        Get Started
-      </a>
+{% if not is_authenticated %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/get-started' %}header-nav-item--active{% endif %}">
+      <a href="/get-started" data-animation-role="header-element" {% if request.path == '/get-started' %}aria-current="page"{% endif %}>Get Started</a>
     </div>
-  
-  
-  
+{% endif %}
 
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/student-dashboard"
-        data-animation-role="header-element"
-        
-      >
-        Student Dashboard
-      </a>
+{% if is_authenticated and user_role == 'student' %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/student-dashboard' %}header-nav-item--active{% endif %}">
+      <a href="/student-dashboard" data-animation-role="header-element" {% if request.path == '/student-dashboard' %}aria-current="page"{% endif %}>Student Dashboard</a>
     </div>
-  
-  
-  
+{% endif %}
 
-
-  
-    <div class="header-nav-item header-nav-item--collection header-nav-item--active">
-      <a
-        href="/peer-evaluation"
-        data-animation-role="header-element"
-        
-          aria-current="page"
-        
-      >
-        Peer Evaluation
-      </a>
+{% if is_authenticated and user_role == 'professor' %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/professorDashboard' %}header-nav-item--active{% endif %}">
+      <a href="/professorDashboard" data-animation-role="header-element" {% if request.path == '/professorDashboard' %}aria-current="page"{% endif %}>Professor Dashboard</a>
     </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/confirmation-screens"
-        data-animation-role="header-element"
-        
-      >
-        Confirmation Screens
-      </a>
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/importCourseRoster' %}header-nav-item--active{% endif %}">
+      <a href="/importCourseRoster" data-animation-role="header-element" {% if request.path == '/importCourseRoster' %}aria-current="page"{% endif %}>Import Course Roster</a>
     </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/our-approach"
-        data-animation-role="header-element"
-        
-      >
-        Our Approach
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/about"
-        data-animation-role="header-element"
-        
-      >
-        About
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/team"
-        data-animation-role="header-element"
-        
-      >
-        Team
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
+{% endif %}
+<div class="header-nav-item header-nav-item--collection" {% if request.path == \'/contact\' %}header-nav-item--active{% endif %}>
       <a
         href="/contact"
         data-animation-role="header-element"
         
-      >
+       {% if request.path == \'/contact\' %}aria-current="page"{% endif %}>
         Contact
       </a>
     </div>
@@ -1096,125 +1003,32 @@
         Home
       </a>
     </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/get-started"
-        data-animation-role="header-element"
-        
-      >
-        Get Started
-      </a>
+{% if not is_authenticated %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/get-started' %}header-nav-item--active{% endif %}">
+      <a href="/get-started" data-animation-role="header-element" {% if request.path == '/get-started' %}aria-current="page"{% endif %}>Get Started</a>
     </div>
-  
-  
-  
+{% endif %}
 
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/student-dashboard"
-        data-animation-role="header-element"
-        
-      >
-        Student Dashboard
-      </a>
+{% if is_authenticated and user_role == 'student' %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/student-dashboard' %}header-nav-item--active{% endif %}">
+      <a href="/student-dashboard" data-animation-role="header-element" {% if request.path == '/student-dashboard' %}aria-current="page"{% endif %}>Student Dashboard</a>
     </div>
-  
-  
-  
+{% endif %}
 
-
-  
-    <div class="header-nav-item header-nav-item--collection header-nav-item--active">
-      <a
-        href="/peer-evaluation"
-        data-animation-role="header-element"
-        
-          aria-current="page"
-        
-      >
-        Peer Evaluation
-      </a>
+{% if is_authenticated and user_role == 'professor' %}
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/professorDashboard' %}header-nav-item--active{% endif %}">
+      <a href="/professorDashboard" data-animation-role="header-element" {% if request.path == '/professorDashboard' %}aria-current="page"{% endif %}>Professor Dashboard</a>
     </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/confirmation-screens"
-        data-animation-role="header-element"
-        
-      >
-        Confirmation Screens
-      </a>
+    <div class="header-nav-item header-nav-item--collection {% if request.path == '/importCourseRoster' %}header-nav-item--active{% endif %}">
+      <a href="/importCourseRoster" data-animation-role="header-element" {% if request.path == '/importCourseRoster' %}aria-current="page"{% endif %}>Import Course Roster</a>
     </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/our-approach"
-        data-animation-role="header-element"
-        
-      >
-        Our Approach
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/about"
-        data-animation-role="header-element"
-        
-      >
-        About
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a
-        href="/team"
-        data-animation-role="header-element"
-        
-      >
-        Team
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
+{% endif %}
+<div class="header-nav-item header-nav-item--collection" {% if request.path == \'/contact\' %}header-nav-item--active{% endif %}>
       <a
         href="/contact"
         data-animation-role="header-element"
         
-      >
+       {% if request.path == \'/contact\' %}aria-current="page"{% endif %}>
         Contact
       </a>
     </div>
@@ -1319,8 +1133,8 @@
       data-current-styles="{
 &quot;layout&quot;: &quot;navLeft&quot;,
 &quot;action&quot;: {
-&quot;href&quot;: &quot;/get-started&quot;,
-&quot;buttonText&quot;: &quot;Logout&quot;,
+&quot;href&quot;: &quot;{% if is_authenticated %}{{ url_for('logout') }}{% else %}{{ url_for('login') }}{% endif %}&quot;,
+&quot;buttonText&quot;: &quot;{% if is_authenticated %}Log Out{% else %}Log In{% endif %}&quot;,
 &quot;newWindow&quot;: false
 },
 &quot;showSocial&quot;: false,

@@ -121,7 +121,7 @@ def loginSubmit():
     return redirect(url_for('login'))
     
 
-@app.route('/get-started', methods=['POST'])
+@app.route('/get-started', methods=['GET', 'POST'])
 def get_started():
     if request.method == 'POST':
         # Handle form submission - show success message

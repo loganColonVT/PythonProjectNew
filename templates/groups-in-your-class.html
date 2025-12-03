@@ -116,8 +116,8 @@
     data-current-styles="{
               &quot;layout&quot;: &quot;navLeft&quot;,
               &quot;action&quot;: {
-                &quot;href&quot;: &quot;/get-started&quot;,
-                &quot;buttonText&quot;: &quot;Logout&quot;,
+&quot;href&quot;: &quot;{% if is_authenticated %}{{ url_for('logout') }}{% else %}{{ url_for('login') }}{% endif %}&quot;,
+&quot;buttonText&quot;: &quot;{% if is_authenticated %}Log Out{% else %}Log In{% endif %}&quot;,
                 &quot;newWindow&quot;: false
               },
               &quot;showSocial&quot;: false,
@@ -862,8 +862,8 @@
       data-current-styles="{
               &quot;layout&quot;: &quot;navLeft&quot;,
               &quot;action&quot;: {
-                &quot;href&quot;: &quot;/get-started&quot;,
-                &quot;buttonText&quot;: &quot;Logout&quot;,
+&quot;href&quot;: &quot;{% if is_authenticated %}{{ url_for('logout') }}{% else %}{{ url_for('login') }}{% endif %}&quot;,
+&quot;buttonText&quot;: &quot;{% if is_authenticated %}Log Out{% else %}Log In{% endif %}&quot;,
                 &quot;newWindow&quot;: false
               },
               &quot;showSocial&quot;: false,
