@@ -291,7 +291,7 @@ def peer_evaluation_submit():
     cursor.close()
     conn.close()
 
-        return render_template('confirmation-screens.html')
+    return render_template('confirmation-screens.html')
     
 
 @app.route('/student-dashboard')
