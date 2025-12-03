@@ -122,8 +122,8 @@ def loginSubmit():
     conn.close()
 
     # If we get here, credentials were invalid
-        flash("Invalid email or password", "error")
-        return redirect(url_for('login'))
+    flash("Invalid email or password", "error")
+    return redirect(url_for('login'))
     
 
 @app.route('/get-started', methods=['GET', 'POST'])
