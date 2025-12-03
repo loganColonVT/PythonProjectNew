@@ -7,6 +7,17 @@ import io
 app = Flask(__name__)
 app.secret_key = 'fdshj3838aslenddk232bnhdfs'  # Required for flash messages
 
+# Context processor to expose authentication state to all templates
+@app.context_processor
+def inject_auth_state():
+    is_authenticated = bool(session.get('professor_id') or session.get('student_id'))
+    user_role = None
+    if session.get('professor_id'):
+        user_role = 'professor'
+    elif session.get('student_id'):
+        user_role = 'student'
+    return dict(is_authenticated=is_authenticated, user_role=user_role)
+
 # DB connection
 def get_db_connection():
     connection = mysql.connector.connect(
@@ -70,28 +81,44 @@ def loginSubmit():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    # Check credentials
+    # First check if it's a professor
     cursor.execute("SELECT ProfessorID, Password FROM professor WHERE Email = %s", (email,))
-    result = cursor.fetchone()
+    professor_result = cursor.fetchone()
 
-    error = False
-    if result is None:
-        error = True
-    else:
-        professor_id, db_password = result
-        if password != db_password:
-            error = True
+    if professor_result:
+        professor_id, db_password = professor_result
+        if password == db_password:
+            # Clear any existing student session
+            session.pop('student_id', None)
+            # Store the professor's ID and role in the session
+            session['professor_id'] = professor_id
+            session['role'] = 'professor'
+            cursor.close()
+            conn.close()
+            return redirect(url_for('professor_dashboard'))
+    
+    # If not a professor, check if it's a student
+    cursor.execute("SELECT StudentID, Password FROM student WHERE Email = %s", (email,))
+    student_result = cursor.fetchone()
+
+    if student_result:
+        student_id, db_password = student_result
+        if password == db_password:
+            # Clear any existing professor session
+            session.pop('professor_id', None)
+            # Store the student's ID and role in the session
+            session['student_id'] = student_id
+            session['role'] = 'student'
+            cursor.close()
+            conn.close()
+            return redirect(url_for('student_dashboard'))
 
     cursor.close()
     conn.close()
-
-    if error:
-        flash("Invalid email or password", "error")
-        return redirect(url_for('login'))
-    else:
-        #Store the professor's ID in the session
-        session['professor_id'] = professor_id
-        return redirect(url_for('professor_dashboard'))
+    
+    # If we get here, credentials were invalid
+    flash("Invalid email or password", "error")
+    return redirect(url_for('login'))
     
 
 @app.route('/get-started', methods=['POST'])
@@ -485,6 +512,13 @@ def seeGroups():
 @app.route('/createGroups')
 def createGroups():
     return render_template('creating-groups.html')
+
+@app.route('/logout')
+def logout():
+    # Clear all session data
+    session.clear()
+    flash("You have been logged out successfully.", "success")
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)

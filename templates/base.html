@@ -101,29 +101,26 @@
                         <a href="/" data-animation-role="header-element" {% if request.path == '/' %}aria-current="page"{% endif %}>Home</a>
                       </div>
 
+                      {% if not is_authenticated %}
                       <div class="header-nav-item header-nav-item--collection {% if request.path == '/get-started' %}header-nav-item--active{% endif %}">
                         <a href="/get-started" data-animation-role="header-element" {% if request.path == '/get-started' %}aria-current="page"{% endif %}>Get Started</a>
                       </div>
+                      {% endif %}
 
+                      {% if is_authenticated and user_role == 'student' %}
                       <div class="header-nav-item header-nav-item--collection {% if request.path == '/student-dashboard' %}header-nav-item--active{% endif %}">
                         <a href="/student-dashboard" data-animation-role="header-element" {% if request.path == '/student-dashboard' %}aria-current="page"{% endif %}>Student Dashboard</a>
                       </div>
+                      {% endif %}
 
-                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/peer-evaluation' %}header-nav-item--active{% endif %}">
-                        <a href="/peer-evaluation" data-animation-role="header-element" {% if request.path == '/peer-evaluation' %}aria-current="page"{% endif %}>Peer Evaluation</a>
+                      {% if is_authenticated and user_role == 'professor' %}
+                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/professorDashboard' %}header-nav-item--active{% endif %}">
+                        <a href="/professorDashboard" data-animation-role="header-element" {% if request.path == '/professorDashboard' %}aria-current="page"{% endif %}>Professor Dashboard</a>
                       </div>
-
-                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/our-approach' %}header-nav-item--active{% endif %}">
-                        <a href="/our-approach" data-animation-role="header-element" {% if request.path == '/our-approach' %}aria-current="page"{% endif %}>Our Approach</a>
+                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/importCourseRoster' %}header-nav-item--active{% endif %}">
+                        <a href="/importCourseRoster" data-animation-role="header-element" {% if request.path == '/importCourseRoster' %}aria-current="page"{% endif %}>Import Course Roster</a>
                       </div>
-
-                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/about' %}header-nav-item--active{% endif %}">
-                        <a href="/about" data-animation-role="header-element" {% if request.path == '/about' %}aria-current="page"{% endif %}>About</a>
-                      </div>
-
-                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/team' %}header-nav-item--active{% endif %}">
-                        <a href="/team" data-animation-role="header-element" {% if request.path == '/team' %}aria-current="page"{% endif %}>Team</a>
-                      </div>
+                      {% endif %}
 
                       <div class="header-nav-item header-nav-item--collection {% if request.path == '/contact' %}header-nav-item--active{% endif %}">
                         <a href="/contact" data-animation-role="header-element" {% if request.path == '/contact' %}aria-current="page"{% endif %}>Contact</a>
@@ -139,9 +136,15 @@
                 <div class="showOnDesktop"></div>
 
                 <div class="header-actions-action header-actions-action--cta" data-animation-role="header-element">
-                  <a class="btn btn--border theme-btn--primary-inverse sqs-button-element--primary" href="/get-started">
-                    Logout
+                  {% if is_authenticated %}
+                  <a class="btn btn--border theme-btn--primary-inverse sqs-button-element--primary" href="{{ url_for('logout') }}">
+                    Log Out
                   </a>
+                  {% else %}
+                  <a class="btn btn--border theme-btn--primary-inverse sqs-button-element--primary" href="{{ url_for('login') }}">
+                    Log In
+                  </a>
+                  {% endif %}
                 </div>
               </div>
 
@@ -184,33 +187,26 @@
                         <a href="/" data-animation-role="header-element" {% if request.path == '/' %}aria-current="page"{% endif %}>Home</a>
                       </div>
 
+                      {% if not is_authenticated %}
                       <div class="header-nav-item header-nav-item--collection {% if request.path == '/get-started' %}header-nav-item--active{% endif %}">
                         <a href="/get-started" data-animation-role="header-element" {% if request.path == '/get-started' %}aria-current="page"{% endif %}>Get Started</a>
                       </div>
+                      {% endif %}
 
+                      {% if is_authenticated and user_role == 'student' %}
                       <div class="header-nav-item header-nav-item--collection {% if request.path == '/student-dashboard' %}header-nav-item--active{% endif %}">
                         <a href="/student-dashboard" data-animation-role="header-element" {% if request.path == '/student-dashboard' %}aria-current="page"{% endif %}>Student Dashboard</a>
                       </div>
+                      {% endif %}
 
-                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/peer-evaluation' %}header-nav-item--active{% endif %}">
-                        <a href="/peer-evaluation" data-animation-role="header-element" {% if request.path == '/peer-evaluation' %}aria-current="page"{% endif %}>Peer Evaluation</a>
+                      {% if is_authenticated and user_role == 'professor' %}
+                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/professorDashboard' %}header-nav-item--active{% endif %}">
+                        <a href="/professorDashboard" data-animation-role="header-element" {% if request.path == '/professorDashboard' %}aria-current="page"{% endif %}>Professor Dashboard</a>
                       </div>
-
-                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/confirmation-screens' %}header-nav-item--active{% endif %}">
-                        <a href="/confirmation-screens" data-animation-role="header-element" {% if request.path == '/confirmation-screens' %}aria-current="page"{% endif %}>Confirmation Screens</a>
+                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/importCourseRoster' %}header-nav-item--active{% endif %}">
+                        <a href="/importCourseRoster" data-animation-role="header-element" {% if request.path == '/importCourseRoster' %}aria-current="page"{% endif %}>Import Course Roster</a>
                       </div>
-
-                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/our-approach' %}header-nav-item--active{% endif %}">
-                        <a href="/our-approach" data-animation-role="header-element" {% if request.path == '/our-approach' %}aria-current="page"{% endif %}>Our Approach</a>
-                      </div>
-
-                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/about' %}header-nav-item--active{% endif %}">
-                        <a href="/about" data-animation-role="header-element" {% if request.path == '/about' %}aria-current="page"{% endif %}>About</a>
-                      </div>
-
-                      <div class="header-nav-item header-nav-item--collection {% if request.path == '/team' %}header-nav-item--active{% endif %}">
-                        <a href="/team" data-animation-role="header-element" {% if request.path == '/team' %}aria-current="page"{% endif %}>Team</a>
-                      </div>
+                      {% endif %}
 
                       <div class="header-nav-item header-nav-item--collection {% if request.path == '/contact' %}header-nav-item--active{% endif %}">
                         <a href="/contact" data-animation-role="header-element" {% if request.path == '/contact' %}aria-current="page"{% endif %}>Contact</a>
@@ -226,9 +222,15 @@
                 <div class="showOnDesktop"></div>
 
                 <div class="header-actions-action header-actions-action--cta" data-animation-role="header-element">
-                  <a class="btn btn--border theme-btn--primary-inverse sqs-button-element--primary" href="/get-started">
-                    Logout
+                  {% if is_authenticated %}
+                  <a class="btn btn--border theme-btn--primary-inverse sqs-button-element--primary" href="{{ url_for('logout') }}">
+                    Log Out
                   </a>
+                  {% else %}
+                  <a class="btn btn--border theme-btn--primary-inverse sqs-button-element--primary" href="{{ url_for('login') }}">
+                    Log In
+                  </a>
+                  {% endif %}
                 </div>
               </div>
             </div>
