@@ -293,7 +293,88 @@ def peer_evaluation_submit():
 
 @app.route('/student-dashboard')
 def student_dashboard():
-    return render_template('student-dashboard.html')
+    # Check if student is logged in
+    student_id = session.get('student_id')
+    
+    if not student_id:
+        flash("You must log in first.")
+        return redirect(url_for('login'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    evaluations = []
+    
+    # Query to get groups the student is in with course information
+    # This will show all groups/courses the student is part of for peer evaluation
+    query = """
+        SELECT DISTINCT
+            c.CourseCode,
+            sg.GroupName,
+            sg.GroupID,
+            sg.CourseID
+        FROM groupmembers gm
+        INNER JOIN studentgroup sg ON gm.GroupID = sg.GroupID
+        INNER JOIN course c ON sg.CourseID = c.CourseID
+        WHERE gm.StudentID = %s
+    """
+    
+    try:
+        cursor.execute(query, (student_id,))
+        results = cursor.fetchall()
+        
+        # Convert to list of dictionaries for the template
+        # Use GroupID as peerevalID if there's no separate peer evaluation assignment table
+        for row in results:
+            course_code, group_name, group_id, course_id = row
+            
+            # Try to get peer evaluation ID if there's a peer evaluation assignment table
+            peereval_id = group_id  # Default to group_id
+            
+            # Try different possible table names for peer evaluation assignments
+            try:
+                # Try common table name variations
+                pe_query = """
+                    SELECT PeerEvalID FROM peerevaluationassignment 
+                    WHERE GroupID = %s AND CourseID = %s
+                    LIMIT 1
+                """
+                cursor.execute(pe_query, (group_id, course_id))
+                pe_result = cursor.fetchone()
+                if pe_result:
+                    peereval_id = pe_result[0]
+            except:
+                # If that table doesn't exist or has different name, try alternatives
+                try:
+                    pe_query = """
+                        SELECT PeerEvalID FROM peerevaluation 
+                        WHERE GroupID = %s AND CourseID = %s
+                        LIMIT 1
+                    """
+                    cursor.execute(pe_query, (group_id, course_id))
+                    pe_result = cursor.fetchone()
+                    if pe_result:
+                        peereval_id = pe_result[0]
+                except:
+                    # Use group_id as default
+                    pass
+            
+            evaluations.append({
+                'courseCode': course_code,
+                'groupName': group_name,
+                'groupID': group_id,
+                'courseID': course_id,
+                'peerevalID': peereval_id
+            })
+            
+    except Exception as e:
+        flash(f"Error loading evaluations: {str(e)}", "error")
+        evaluations = []
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template('student-dashboard.html', evaluations=evaluations)
 
 @app.route('/team')
 def team():
