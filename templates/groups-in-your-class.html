@@ -1189,12 +1189,6 @@
           
             
 <article class="sections" id="sections" data-page-sections="6917a8800e40f90fb85fe019">
-  
-  <!-- Action buttons at top of page content -->
-  <div class="page-action-buttons">
-    <a href="{{ url_for('createGroups', courseID=courseID) }}">Edit Groups</a>
-    <a href="{{ url_for('professor_dashboard') }}">Back To Professor Dashboard</a>
-  </div>
 
     
     
@@ -2097,6 +2091,12 @@
 </div>
 
 </section>
+
+  <!-- Action buttons at bottom of page content -->
+  <div class="page-action-buttons" style="margin-top: 2rem;">
+    <a href="{{ url_for('createGroups', courseID=courseID) }}">Edit Groups</a>
+    <a href="{{ url_for('professor_dashboard') }}">Back To Professor Dashboard</a>
+  </div>
 
   
 </article>
