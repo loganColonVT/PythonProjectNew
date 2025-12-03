@@ -148,6 +148,12 @@
         background-color: transparent !important;
       }
       
+      /* Hide empty footer block and any chart blocks */
+      #block-86253f3f9cdb54ccbfc9,
+      .fe-block-86253f3f9cdb54ccbfc9 {
+        display: none !important;
+      }
+      
       /* Override parent container padding that's causing centering issues */
       #block-e879b03e151e084b3cba {
         padding: 0 !important; /* Remove the 6% padding that's causing offset */
@@ -2031,15 +2037,6 @@
 
         {% endblock content %}
             
-              <fieldset id="cff8453b-5fe8-4e4e-b2db-688cb487444c" class="form-item fields name required">
-                
-            <legend class="title">
-              Student Evaluator
-              
-                <span class="required" aria-hidden="true">*</span>
-              
-            </legend>
-          
               <!-- Hidden fields for evaluation data -->
               <input type="hidden" name="peerevalID" value="{{ peerevalID }}">
               <input type="hidden" name="groupID" value="{{ groupID }}">
@@ -2050,7 +2047,6 @@
                 <label class="title">Course: {{ courseCode }}</label>
               </div>
               {% endif %}
-              </fieldset>
             
 
             
@@ -3681,9 +3677,6 @@
 
 </style><div class="fluid-engine fe-68e67da8ffcdae09c7758699"><div class="fe-block fe-block-86253f3f9cdb54ccbfc9"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="&#123;&quot;topLeft&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;topRight&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;bottomLeft&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;,&quot;bottomRight&quot;:&#123;&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0&#125;&#125;" data-sqsp-block="text" id="block-86253f3f9cdb54ccbfc9"><div class="sqs-block-content">
 
-<div class="sqs-html-content" data-sqsp-text-block-content>
-  <h4 style="text-align:center;white-space:pre-wrap;">SMU Peer Evaluation Portal</h4>
-</div>
 
 
 
