@@ -481,7 +481,79 @@ def seeGroups():
 
 @app.route('/createGroups')
 def createGroups():
-    return render_template('creating-groups.html')
+    professor_id = session.get('professor_id')
+    if not professor_id:
+        flash('You must log in first.', 'error')
+        return redirect(url_for('login'))
+    
+    # Get courseID from query parameters
+    course_id = request.args.get('courseID')
+    if not course_id:
+        flash('No course selected', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Verify course belongs to professor
+    cursor.execute("SELECT CourseCode FROM course WHERE CourseID = %s AND ProfessorID = %s", 
+                  (course_id, professor_id))
+    course_result = cursor.fetchone()
+    
+    if not course_result:
+        cursor.close()
+        conn.close()
+        flash('Course not found or you do not have access to it.', 'error')
+        return redirect(url_for('professor_dashboard'))
+    
+    course_code = course_result[0]
+    
+    # Get ALL students enrolled in this course (not just those in groups)
+    cursor.execute("""
+        SELECT DISTINCT s.StudentID, s.Name
+        FROM student s
+        INNER JOIN enrollment e ON s.StudentID = e.StudentID
+        WHERE e.CourseID = %s
+        ORDER BY s.Name
+    """, (course_id,))
+    
+    students = [{'studentID': row[0], 'name': row[1]} for row in cursor.fetchall()]
+    
+    # Get existing groups for this course (for editing) - limit to 4 groups
+    cursor.execute("""
+        SELECT GroupID, GroupName
+        FROM studentgroup
+        WHERE CourseID = %s
+        ORDER BY GroupID
+        LIMIT 4
+    """, (course_id,))
+    
+    existing_groups = []
+    for group_row in cursor.fetchall():
+        group_id, group_name = group_row
+        
+        # Get students in this group
+        cursor.execute("""
+            SELECT StudentID
+            FROM groupmembers
+            WHERE GroupID = %s
+        """, (group_id,))
+        
+        student_ids_in_group = [row[0] for row in cursor.fetchall()]
+        existing_groups.append({
+            'groupID': group_id,
+            'groupName': group_name,
+            'studentIDs': student_ids_in_group
+        })
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template('creating-groups.html', 
+                         courseID=course_id, 
+                         courseCode=course_code, 
+                         students=students,
+                         existingGroups=existing_groups)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)

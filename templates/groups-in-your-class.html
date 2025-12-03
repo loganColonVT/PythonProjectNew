@@ -1157,8 +1157,32 @@
     </div>
   </header>
 
-
-
+<style>
+  /* Ensure buttons are visible and at top of page content */
+  .page-action-buttons {
+    padding: 20px;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 1200px;
+    position: relative;
+    z-index: 1000;
+    background: white;
+    border-bottom: 1px solid #ddd;
+  }
+  .page-action-buttons a {
+    display: inline-block;
+    margin: 0 10px;
+    padding: 12px 24px;
+    background-color: #0033A1;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  .page-action-buttons a:hover {
+    background-color: #002080;
+  }
+</style>
 
       <main id="page" class="container" role="main">
         
@@ -1167,15 +1191,9 @@
 <article class="sections" id="sections" data-page-sections="6917a8800e40f90fb85fe019">
   
   <!-- Action buttons at top of page content -->
-  <div style="padding: 20px; text-align: center; margin: 20px auto; max-width: 1200px; position: relative; z-index: 10;">
-    <a href="{{ url_for('createGroups', courseID=courseID) }}" 
-       style="display: inline-block; margin: 0 10px; padding: 12px 24px; background-color: #0033A1; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
-      Edit Groups
-    </a>
-    <a href="{{ url_for('professor_dashboard') }}" 
-       style="display: inline-block; margin: 0 10px; padding: 12px 24px; background-color: #0033A1; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
-      Back To Professor Dashboard
-    </a>
+  <div class="page-action-buttons">
+    <a href="{{ url_for('createGroups', courseID=courseID) }}">Edit Groups</a>
+    <a href="{{ url_for('professor_dashboard') }}">Back To Professor Dashboard</a>
   </div>
 
     
