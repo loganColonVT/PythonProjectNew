@@ -2040,37 +2040,16 @@
               
             </legend>
           
-                
-                <div class="field first-name">
-                  <label class="caption">
-                    <input
-                        class="field-element field-control"
-                        name="fname"
-                        x-autocompletetype="given-name"
-                        type="text"
-                        spellcheck="false"
-                        maxlength="30"
-                        data-title="First"
-                        aria-required="true"
-                    />
-                    <span class="caption-text">First Name</span>
-                  </label>
-                </div>
-                <div class="field last-name">
-                  <label class="caption">
-                    <input
-                        class="field-element field-control"
-                        name="lname"
-                        x-autocompletetype="surname"
-                        type="text"
-                        spellcheck="false"
-                        maxlength="30"
-                        data-title="Last"
-                        aria-required="true"
-                    />
-                    <span class="caption-text">Last Name</span>
-                  </label>
-                </div>
+              <!-- Hidden fields for evaluation data -->
+              <input type="hidden" name="peerevalID" value="{{ peerevalID }}">
+              <input type="hidden" name="groupID" value="{{ groupID }}">
+              <input type="hidden" name="courseID" value="{{ courseID }}">
+              
+              {% if courseCode %}
+              <div class="form-item field">
+                <label class="title">Course: {{ courseCode }}</label>
+              </div>
+              {% endif %}
               </fieldset>
             
 
@@ -2117,104 +2096,17 @@
             
 
             
-              <fieldset id="name-yui_3_17_2_1_1553888888520_3744" class="form-item fields name required">
-                
-            <legend class="title">
-              Student Evaluatee
-              
-                <span class="required" aria-hidden="true">*</span>
-              
-            </legend>
-          
-                
-                <div class="field first-name">
-                  <label class="caption">
-                    <input
-                        class="field-element field-control"
-                        name="fname2"
-                        x-autocompletetype="given-name"
-                        type="text"
-                        spellcheck="false"
-                        maxlength="30"
-                        data-title="First"
-                        aria-required="true"
-                    />
-                    <span class="caption-text">First Name</span>
-                  </label>
-                </div>
-                <div class="field last-name">
-                  <label class="caption">
-                    <input
-                        class="field-element field-control"
-                        name="lname2"
-                        x-autocompletetype="surname"
-                        type="text"
-                        spellcheck="false"
-                        maxlength="30"
-                        data-title="Last"
-                        aria-required="true"
-                    />
-                    <span class="caption-text">Last Name</span>
-                  </label>
-                </div>
-              </fieldset>
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-        
-
-          
-
-          
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-              <div id="select-1da02bf5-2a58-401a-ad16-ff7c6a2ecdd6" class="form-item field select">
-                
-            <label class="title" for="select-1da02bf5-2a58-401a-ad16-ff7c6a2ecdd6-field">
-              Course ID
-              
-            </label>
-          
-                
-                <select id="select-1da02bf5-2a58-401a-ad16-ff7c6a2ecdd6-field" name="courseID">
-                  {% for id in courseIDs %}
-                    <option value="{{ id }}">{{ id }}</option>
+              <div id="select-evaluatee" class="form-item field select">
+                <label class="title" for="select-evaluatee-field">
+                  Student to Evaluate
+                  <span class="required" aria-hidden="true">*</span>
+                </label>
+                <select id="select-evaluatee-field" name="evaluateeID" required>
+                  <option value="">-- Select a student --</option>
+                  {% for student in groupStudents %}
+                    <option value="{{ student.studentID }}">{{ student.name }}</option>
                   {% endfor %}
                 </select>
-                
               </div>
             
 
@@ -2228,8 +2120,6 @@
 
             
 
-            
-
         
 
           
@@ -2261,67 +2151,10 @@
             
 
             
-
             
 
             
-              <fieldset id="c4feb875-f54a-4406-9fb3-3fc84b21e732" class="form-item fields date">
-                
-            <legend class="title">
-              Evaluation Completion Date 
-              
-            </legend>
-          
-                
-                <div class="field month two-digits">
-                  <label class="caption">
-                    <input
-                        class="field-element"
-                        type="text"
-                        maxlength="2"
-                        type="number"
-                        min="1"
-                        max="12"
-                        data-title="Month"
-                        name="month"
-                        
-                    />
-                    <span class="caption-text">MM</span>
-                  </label>
-                </div>
-                <div class="field day two-digits">
-                  <label class="caption">
-                    <input
-                      class="field-element"
-                      type="text"
-                      maxlength="2"
-                      type="number"
-                      min="1"
-                      max="31"
-                      data-title="Day"
-                      name="day"
-                      
-                      />
-                    <span class="caption-text">DD</span>
-                  </label>
-                </div>
-                <div class="field year four-digits">
-                  <label class="caption">
-                    <input
-                        class="field-element"
-                        type="text"
-                        maxlength="4"
-                        minlength="4"
-                        type="number"
-                        min="2020"
-                        data-title="Year"
-                        name="year"
-                        
-                    />
-                    <span class="caption-text">YYYY</span>
-                  </label>
-                </div>
-              </fieldset>
+
             
 
             
@@ -2367,63 +2200,51 @@
             
 
             
-              <fieldset id="date-95c12d24-6071-4c37-9409-2cc8b8fb0a12" class="form-item fields date">
-                
-            <legend class="title">
-              Evaluation Due Date
-              
-            </legend>
+            
+
+            
+
+            
+
+            
+
+            
+
+        
+
           
-                
-                <div class="field month two-digits">
-                  <label class="caption">
-                    <input
-                        class="field-element"
-                        type="text"
-                        maxlength="2"
-                        type="number"
-                        min="1"
-                        max="12"
-                        data-title="Month"
-                        name="month2"
-                        
-                    />
-                    <span class="caption-text">MM</span>
-                  </label>
-                </div>
-                <div class="field day two-digits">
-                  <label class="caption">
-                    <input
-                      class="field-element"
-                      type="text"
-                      maxlength="2"
-                      type="number"
-                      min="1"
-                      max="31"
-                      data-title="Day"
-                      name="day2"
-                      
-                      />
-                    <span class="caption-text">DD</span>
-                  </label>
-                </div>
-                <div class="field year four-digits">
-                  <label class="caption">
-                    <input
-                        class="field-element"
-                        type="text"
-                        maxlength="4"
-                        type="number"
-                        min="2020"
-                        minlength="4"
-                        data-title="Year"
-                        name="year2"
-                        
-                    />
-                    <span class="caption-text">YYYY</span>
-                  </label>
-                </div>
-              </fieldset>
+
+          
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
             
 
             

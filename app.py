@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response
 import os
 import mysql.connector
 import csv
@@ -32,7 +32,12 @@ def get_db_connection():
 # Home route
 @app.route('/')
 def home():
-    return render_template('index.html')
+    response = make_response(render_template('index.html'))
+    # Prevent caching of the home page to ensure fresh session state
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 @app.route('/testsql')
 def tester():
@@ -131,181 +136,207 @@ def get_started():
 
 @app.route('/peer-evaluation')
 def peer_evaluation():
+    student_id = session.get('student_id')
+    
+    if not student_id:
+        flash("You must log in first.", "error")
+        return redirect(url_for('login'))
+    
+    # Get peerevalID and groupID from query parameters
+    peereval_id = request.args.get('peerevalID')
+    group_id = request.args.get('groupID')
+    course_id = request.args.get('courseID')
+    
+    if not peereval_id or not group_id or not course_id:
+        flash("Missing required parameters.", "error")
+        return redirect(url_for('student_dashboard'))
+    
     conn = get_db_connection()
     cursor = conn.cursor()
+    
+    # Verify the peer evaluation belongs to the logged-in student
+    cursor.execute("""
+        SELECT StudentEvaluator, CourseID 
+        FROM peerevaluation 
+        WHERE PeerEvalID = %s
+    """, (peereval_id,))
+    
+    eval_check = cursor.fetchone()
+    if not eval_check or eval_check[0] != student_id:
+        cursor.close()
+        conn.close()
+        flash("You don't have permission to access this evaluation.", "error")
+        return redirect(url_for('student_dashboard'))
+    
+    # Get all students in the specified group (excluding the evaluator)
+    cursor.execute("""
+        SELECT s.StudentID, s.Name
+        FROM student s
+        INNER JOIN groupmembers gm ON s.StudentID = gm.StudentID
+        WHERE gm.GroupID = %s AND s.StudentID != %s
+        ORDER BY s.Name
+    """, (group_id, student_id))
+    
+    group_students = [{'studentID': row[0], 'name': row[1]} for row in cursor.fetchall()]
+    
+    # Get course code for display
+    cursor.execute("SELECT CourseCode FROM course WHERE CourseID = %s", (course_id,))
+    course_result = cursor.fetchone()
+    course_code = course_result[0] if course_result else None
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template('peer-evaluation.html', 
+                         peerevalID=peereval_id,
+                         groupID=group_id,
+                         courseID=course_id,
+                         courseCode=course_code,
+                         groupStudents=group_students)
 
-    cursor.execute('select courseCode from course;')
-    courseIDs = [row[0] for row in cursor.fetchall()]
+@app.route('/peer-evalsubmit', methods=['POST'])
+def peer_evaluation_submit():
+    student_id = session.get('student_id')
+    
+    if not student_id:
+        flash("You must log in first.", "error")
+        return redirect(url_for('login'))
+    
+    error = False
 
+    # Get form data
+    peereval_id = request.form.get("peerevalID")
+    evaluatee_id = request.form.get("evaluateeID")  # From dropdown
+    course_id = request.form.get("courseID")
+
+    if not evaluatee_id:
+        error = True
+        flash("Please select a student to evaluate.")
+    if not course_id:
+        error = True
+        flash("Missing course information.")
+
+    # Get all score fields
+    contribution = request.form.get("field1")
+    collaboration = request.form.get("field2")
+    communication = request.form.get("field3")
+    planning = request.form.get("field4")
+    inclusivity = request.form.get("field5")
+    overall = request.form.get("field6")
+
+    # Validate all scores are provided
+    if not all([contribution, collaboration, communication, planning, inclusivity, overall]):
+        error = True
+        flash("Please provide all evaluation scores.")
+
+    if error:
+        # Redirect back to peer evaluation with parameters
+        return redirect(url_for('peer_evaluation', 
+                               peerevalID=peereval_id,
+                               groupID=request.form.get("groupID"),
+                               courseID=course_id))
+    
+    # Convert scores to integers
+    contribution = int(contribution)
+    collaboration = int(collaboration)
+    communication = int(communication)
+    planning = int(planning)
+    inclusivity = int(inclusivity)
+    overall = int(overall)
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Check if evaluation exists with this evaluator and evaluatee
+    cursor.execute("""
+        SELECT PeerEvalID 
+        FROM peerevaluation 
+        WHERE StudentEvaluator = %s AND StudentEvaluatee = %s AND CourseID = %s
+    """, (student_id, evaluatee_id, course_id))
+    
+    existing_eval = cursor.fetchone()
+    
+    if existing_eval:
+        # Update existing evaluation
+        cursor.execute("""
+            UPDATE peerevaluation 
+            SET Contribution = %s, Collaboration = %s, Communication = %s, 
+                Planning = %s, Inclusivity = %s, Overall = %s
+            WHERE PeerEvalID = %s
+        """, (contribution, collaboration, communication, planning, inclusivity, overall, existing_eval[0]))
+        flash("Peer evaluation updated successfully!", "success")
+    else:
+        # Insert new evaluation
+        if peereval_id:
+            # Use the provided peerevalID
+            cursor.execute("""
+                INSERT INTO peerevaluation 
+                (PeerEvalID, StudentEvaluator, StudentEvaluatee, CourseID, 
+                 Contribution, Collaboration, Communication, Planning, Inclusivity, Overall)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (peereval_id, student_id, evaluatee_id, course_id, 
+                  contribution, collaboration, communication, planning, inclusivity, overall))
+        else:
+            # Let database auto-generate PeerEvalID
+            cursor.execute("""
+                INSERT INTO peerevaluation 
+                (StudentEvaluator, StudentEvaluatee, CourseID, 
+                 Contribution, Collaboration, Communication, Planning, Inclusivity, Overall)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (student_id, evaluatee_id, course_id, 
+                  contribution, collaboration, communication, planning, inclusivity, overall))
+        flash("Peer evaluation submitted successfully!", "success")
+    
+    conn.commit()
     cursor.close()
     conn.close()
 
-    return render_template('peer-evaluation.html', courseIDs=courseIDs)
-
-#REMINDER - When access to SQL DB -> replace hardcoded choices. 
-#Also ensure that you have the correct values to be added to database - 
-#there could be more or less than what is provided. Consult Daria/Shriya!!
-@app.route('/peer-evalsubmit', methods=['POST'])
-def peer_evaluation_submit():
-    def safe_int(value):
-        try:
-            return int(value)
-        except (TypeError, ValueError):
-            return None
-
-    error = False
-
-    # Student evaluator
-    fname = request.form.get("fname")
-    lname = request.form.get("lname")
-
-    if not fname:
-        error = True
-        flash("Please provide your first name")
-    if not lname:
-        error = True
-        flash("Please provide your last name")
-
-    # Student evaluatee
-    fname2 = request.form.get("fname2")
-    lname2 = request.form.get("lname2")
-
-    if not fname2:
-        error = True
-        flash("Please provide your evaluatee's first name")
-    if not lname2:
-        error = True
-        flash("Please provide your evaluatee's last name")
-
-    # Course ID
-    courseID = request.form.get("courseID")
-    if not courseID:
-        error = True
-        flash("Please select valid course ID")
-
-    # Completion date Month, Day, Year (Respectively)
-    month = safe_int(request.form.get("month"))
-    day = safe_int(request.form.get("day"))
-    year = safe_int(request.form.get("year"))
-
-    if not all([month, day, year]):
-        error = True
-        flash("Please enter a valid numeric completion date.")
-    
-    # Evaluation due date month, day, year (respectively)
-    month2 = safe_int(request.form.get("month2"))
-    day2 = safe_int(request.form.get("day2"))
-    year2 = safe_int(request.form.get("year2"))
-
-    if not all([month2, day2, year2]):
-        error = True
-        flash("Please enter a valid numeric due date.")
-
-    #Radio is not included in error checking
-    #Values are marked as required -> this is just simpler
-
-    #participation score
-    pscore = request.form.get("field1")
-    if not pscore:
-        error = True
-   
-
-    #skillful score
-    sscore = request.form.get("field2")
-    if not sscore:
-        error = True    
-
-    #feedback score
-    fscore = request.form.get("field3")
-    if not fscore:
-        error = True 
-
-    #communication score
-    cscore = request.form.get("field4")
-    if not cscore:
-        error = True
-
-    #encouragement score
-    escore = request.form.get("field5")
-    if not escore:
-        error = True
-
-    #integration score 
-    iscore = request.form.get("field6")
-    if not iscore:
-        error = True
-
-    #role score
-    rscore = request.form.get("field7")
-    if not rscore:
-        error = True
-
-    #goals score
-    gscore = request.form.get("field8")
-    if not gscore:
-        error = True
-
-    #reporting score
-    rescore = request.form.get("field9")
-    if not rescore:
-        error = True
-
-    #consistency score
-    coscore = request.form.get("field10")
-    if not coscore:
-        error = True
-    
-    #optimism score
-    oscore = request.form.get("field11")
-    if not oscore:
-        error = True
-
-    #appropriate assertiveness score
-    ascore = request.form.get("field12")
-    if not ascore:
-        error = True
-
-    #healthy debate score
-    dscore = request.form.get("field13")
-    if not dscore:
-        error = True
-
-    #response to conflict score
-    rtcscore = request.form.get("field14")
-    if not rtcscore:
-        error = True
-
-    #overall score
-    ovscore = request.form.get("field15")
-    if not ovscore:
-        error = True
-
-    if error:
-        flash("Ensure all parts of form are answered.")
-        return redirect(url_for('peer_evaluation'))
-    else:
-        pscore=int(pscore)
-        sscore=int(sscore)
-        fscore=int(fscore)
-        cscore=int(cscore)
-        escore=int(escore)
-        iscore=int(iscore)
-        rscore=int(rscore)
-        gscore=int(gscore)
-        rescore=int(rescore)
-        coscore=int(coscore)
-        oscore=int(oscore)
-        ascore=int(ascore)
-        dscore=int(dscore)
-        rtcscore=int(rtcscore)
-        ovscore=int(ovscore)
-
-        return render_template('confirmation-screens.html')
+    return render_template('confirmation-screens.html')
     
 
 @app.route('/student-dashboard')
 def student_dashboard():
-    return render_template('student-dashboard.html')
+    student_id = session.get('student_id')
+    
+    if not student_id:
+        flash("You must log in first.", "error")
+        return redirect(url_for('login'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Query peer evaluations for this student, including course code and group info
+    # Get all peer evaluations where student is evaluator, and find their group for each course
+    cursor.execute("""
+        SELECT DISTINCT 
+            pe.PeerEvalID,
+            pe.CourseID,
+            c.CourseCode,
+            sg.GroupID,
+            sg.GroupName
+        FROM peerevaluation pe
+        INNER JOIN course c ON pe.CourseID = c.CourseID
+        INNER JOIN groupmembers gm ON pe.StudentEvaluator = gm.StudentID
+        INNER JOIN studentgroup sg ON gm.GroupID = sg.GroupID AND sg.CourseID = pe.CourseID
+        WHERE pe.StudentEvaluator = %s
+        ORDER BY c.CourseCode, sg.GroupName
+    """, (student_id,))
+    
+    evaluations = []
+    for row in cursor.fetchall():
+        peereval_id, course_id, course_code, group_id, group_name = row
+        evaluations.append({
+            'peerevalID': peereval_id,
+            'courseID': course_id,
+            'courseCode': course_code,
+            'groupID': group_id,
+            'groupName': group_name or 'No Group'
+        })
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template('student-dashboard.html', evaluations=evaluations)
 
 @app.route('/team')
 def team():
@@ -515,10 +546,19 @@ def createGroups():
 
 @app.route('/logout')
 def logout():
-    # Clear all session data
-    session.clear()
+    # Explicitly clear all session keys
+    session.pop('professor_id', None)
+    session.pop('student_id', None)
+    session.pop('role', None)
+    session.clear()  # Clear any remaining session data
+    session.modified = True  # Ensure Flask knows the session was modified
     flash("You have been logged out successfully.", "success")
-    return redirect(url_for('home'))
+    # Use redirect with no_cache to prevent caching
+    response = redirect(url_for('home'))
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)

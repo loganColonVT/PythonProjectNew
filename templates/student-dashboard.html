@@ -1787,6 +1787,31 @@
 
 <div class="sqs-html-content" data-sqsp-text-block-content>
   <h2 style="text-align:center;white-space:pre-wrap;">Student Dashboard</h2>
+  {% if evaluations %}
+    <div style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
+      {% for eval in evaluations %}
+        <div style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h3 style="color: #0033A1; font-size: 1.2em; margin-bottom: 0.5rem;">
+            {{ eval.courseCode }}
+          </h3>
+          <p style="color: #666; margin-bottom: 1rem;">
+            Group: {{ eval.groupName }}
+          </p>
+          <a 
+            href="{{ url_for('peer_evaluation', peerevalID=eval.peerevalID, groupID=eval.groupID, courseID=eval.courseID) }}" 
+            class="sqs-block-button-element--medium sqs-button-element--primary"
+            style="display: inline-block; padding: 10px 20px; background: #0033A1; color: white; text-decoration: none; border-radius: 4px;"
+          >
+            Start Now
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="text-align: center; padding: 2rem; color: #666;">
+      <p>No peer evaluations available at this time.</p>
+    </div>
+  {% endif %}
 </div>
 
 
@@ -1822,64 +1847,7 @@
   data-button-size="medium"
   data-button-type="primary"
 > 
-  <a 
-    href="{{ url_for('peer_evaluation') }}" 
-    class="sqs-block-button-element--medium sqs-button-element--primary sqs-block-button-element"
-    data-sqsp-button
-    
-  >
-    Start Now
-  </a>
-  <style>
-    #block-yui_3_17_2_1_1759938080638_4496 {
-      --sqs-block-content-flex: 1;
-    }
-  </style>
-</div></div></div></div><div class="fe-block fe-block-50bd4e49c3e307700d07"><div class="sqs-block website-component-block sqs-block-website-component sqs-block-button button-block" data-block-css="[&quot;https://definitions.sqspcdn.com/website-component-definition/static-assets/website.components.button/c775a316-b6a1-44bd-af1b-923fef85cfba_110/website.components.button.styles.css&quot;]" data-block-scripts="[&quot;https://definitions.sqspcdn.com/website-component-definition/static-assets/website.components.button/c775a316-b6a1-44bd-af1b-923fef85cfba_110/website.components.button.visitor.js&quot;]" data-block-type="1337" data-definition-name="website.components.button" data-sqsp-block="button" id="block-50bd4e49c3e307700d07"><div class="sqs-block-content">
-
-<div
-  class="sqs-block-button-container sqs-block-button-container--center sqs-stretched"
-  data-animation-role="button"
-  data-alignment="center"
-  data-button-size="medium"
-  data-button-type="primary"
-> 
-  <a 
-    href="{{ url_for('peer_evaluation') }}" 
-    class="sqs-block-button-element--medium sqs-button-element--primary sqs-block-button-element"
-    data-sqsp-button
-    
-  >
-    Start Now
-  </a>
-  <style>
-    #block-50bd4e49c3e307700d07 {
-      --sqs-block-content-flex: 1;
-    }
-  </style>
-</div></div></div></div><div class="fe-block fe-block-05cb9a97cfd5e779f6e5"><div class="sqs-block website-component-block sqs-block-website-component sqs-block-button button-block" data-block-css="[&quot;https://definitions.sqspcdn.com/website-component-definition/static-assets/website.components.button/c775a316-b6a1-44bd-af1b-923fef85cfba_110/website.components.button.styles.css&quot;]" data-block-scripts="[&quot;https://definitions.sqspcdn.com/website-component-definition/static-assets/website.components.button/c775a316-b6a1-44bd-af1b-923fef85cfba_110/website.components.button.visitor.js&quot;]" data-block-type="1337" data-definition-name="website.components.button" data-sqsp-block="button" id="block-05cb9a97cfd5e779f6e5"><div class="sqs-block-content">
-
-<div
-  class="sqs-block-button-container sqs-block-button-container--center sqs-stretched"
-  data-animation-role="button"
-  data-alignment="center"
-  data-button-size="medium"
-  data-button-type="primary"
-> 
-  <a 
-    href="{{ url_for('peer_evaluation') }}" 
-    class="sqs-block-button-element--medium sqs-button-element--primary sqs-block-button-element"
-    data-sqsp-button
-    
-  >
-    Start Now
-  </a>
-  <style>
-    #block-05cb9a97cfd5e779f6e5 {
-      --sqs-block-content-flex: 1;
-    }
-  </style>
-</div></div></div></div><div class="fe-block fe-block-yui_3_17_2_1_1759896662061_119802"><div class="sqs-block calendar-block sqs-block-calendar" data-block-json="&#123;&quot;collectionId&quot;:null&#125;" data-block-type="26" id="block-yui_3_17_2_1_1759896662061_119802"><div class="sqs-block-content">
+<div class="fe-block fe-block-yui_3_17_2_1_1759896662061_119802"><div class="sqs-block calendar-block sqs-block-calendar" data-block-json="&#123;&quot;collectionId&quot;:null&#125;" data-block-type="26" id="block-yui_3_17_2_1_1759896662061_119802"><div class="sqs-block-content">
 
 
   
