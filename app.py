@@ -120,10 +120,10 @@ def loginSubmit():
 
     cursor.close()
     conn.close()
-    
+
     # If we get here, credentials were invalid
-    flash("Invalid email or password", "error")
-    return redirect(url_for('login'))
+        flash("Invalid email or password", "error")
+        return redirect(url_for('login'))
     
 
 @app.route('/get-started', methods=['GET', 'POST'])
@@ -153,7 +153,7 @@ def peer_evaluation():
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     # Verify the peer evaluation belongs to the logged-in student
     cursor.execute("""
         SELECT StudentEvaluator, CourseID 
@@ -183,10 +183,10 @@ def peer_evaluation():
     cursor.execute("SELECT CourseCode FROM course WHERE CourseID = %s", (course_id,))
     course_result = cursor.fetchone()
     course_code = course_result[0] if course_result else None
-    
+
     cursor.close()
     conn.close()
-    
+
     return render_template('peer-evaluation.html', 
                          peerevalID=peereval_id,
                          groupID=group_id,
@@ -201,7 +201,7 @@ def peer_evaluation_submit():
     if not student_id:
         flash("You must log in first.", "error")
         return redirect(url_for('login'))
-    
+
     error = False
 
     # Get form data
@@ -291,7 +291,7 @@ def peer_evaluation_submit():
     cursor.close()
     conn.close()
 
-    return render_template('confirmation-screens.html')
+        return render_template('confirmation-screens.html')
     
 
 @app.route('/student-dashboard')
@@ -471,19 +471,25 @@ def importSubmit():
                 name = row[1].strip()
                 email = row[2].strip()
                 
+                # Check if studentID already exists
+                cursor.execute("SELECT StudentID FROM student WHERE StudentID = %s", (student_id,))
+                student_exists = cursor.fetchone()
+                
+                if not student_exists:
+                    # Student doesn't exist - create new student with password
                 # Extract first name from Name column
                 first_name = name.split()[0] if name else ''
                 password = first_name + '123'
                 
-                # Insert student into database (or skip if exists)
-                try:
-                    sql = 'INSERT INTO student (StudentID, Name, Email, Password) VALUES (%s, %s, %s, %s)'
-                    values = (student_id, name, email, password)
-                    cursor.execute(sql, values)
-                    students_added += 1
-                except mysql.connector.IntegrityError:
-                    # Student already exists, that's okay
-                    pass
+                    try:
+                sql = 'INSERT INTO student (StudentID, Name, Email, Password) VALUES (%s, %s, %s, %s)'
+                values = (student_id, name, email, password)
+                        cursor.execute(sql, values)
+                        students_added += 1
+                    except Exception as e:
+                        errors.append(f"Row {row_num}: Error creating student {student_id} - {str(e)}")
+                        continue  # Skip enrollment if student creation failed
+                # If student exists, skip student creation and just create enrollment
                 
                 student_ids.append(student_id)
                 
