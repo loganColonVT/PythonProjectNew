@@ -119,16 +119,56 @@ def get_started():
 
 @app.route('/peer-evaluation')
 def peer_evaluation():
+    # Get parameters from URL
+    group_id = request.args.get('groupID')
+    course_id = request.args.get('courseID')
+    peereval_id = request.args.get('peerevalID')
+    
+    # Check if student is logged in
+    student_id = session.get('student_id')
+    
+    if not student_id:
+        flash("You must log in first.")
+        return redirect(url_for('login'))
+    
     conn = get_db_connection()
     cursor = conn.cursor()
-
-    cursor.execute('select courseCode from course;')
+    
+    group_students = []
+    
+    # If groupID is provided, get all students in that group
+    if group_id:
+        try:
+            # Query to get all students in the group (excluding the current student)
+            query = """
+                SELECT s.StudentID, s.Name
+                FROM student s
+                INNER JOIN groupmembers gm ON s.StudentID = gm.StudentID
+                WHERE gm.GroupID = %s AND s.StudentID != %s
+                ORDER BY s.Name
+            """
+            cursor.execute(query, (group_id, student_id))
+            results = cursor.fetchall()
+            
+            # Convert to list of dictionaries for the template
+            for row in results:
+                group_students.append({
+                    'studentID': row[0],
+                    'name': row[1]
+                })
+        except Exception as e:
+            flash(f"Error loading group members: {str(e)}", "error")
+            group_students = []
+    
+    # Get course codes for dropdown (if still needed)
+    cursor.execute('SELECT CourseCode FROM course;')
     courseIDs = [row[0] for row in cursor.fetchall()]
 
     cursor.close()
     conn.close()
 
-    return render_template('peer-evaluation.html', courseIDs=courseIDs)
+    return render_template('peer-evaluation.html', courseIDs=courseIDs, groupStudents=group_students, 
+                         groupID=group_id, courseID=course_id, peerevalID=peereval_id)
 
 #REMINDER - When access to SQL DB -> replace hardcoded choices. 
 #Also ensure that you have the correct values to be added to database - 
