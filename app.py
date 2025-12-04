@@ -895,7 +895,7 @@ def createGroupsSubmit():
         cursor.close()
         conn.close()
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
     # Explicitly clear all session keys
     session.pop('professor_id', None)
